@@ -1,5 +1,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+    <!-- Heroku db credentials -->
     <entry key="dbName">d6tjmbg7rflp66</entry>
     <entry key="hostname">ec2-54-83-53-120.compute-1.amazonaws.com</entry>
     <entry key="port">5432</entry>
