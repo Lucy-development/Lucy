@@ -3,6 +3,7 @@ package data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.Properties;
@@ -71,7 +72,7 @@ public class DatabaseManager {
     }
 
     public Person personByID(Integer ID) {
-        String query = String.format("SELECT * FROM person_by_id('%s')",ID);
+        String query = String.format("SELECT * FROM person_by_id('%s')", ID);
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -103,8 +104,24 @@ public class DatabaseManager {
     // TODO: method to add messages and files
 
     // TODO: figure out how to use messages_today_by(int)
+    /**
+     * Return sent message count by SenderId
+     */
+    public BigDecimal getSentMessageCount(Integer senderId) {
+        String query = String.format("SELECT  messages_today_by(%s)", senderId);
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
 
-    // TODO: use VIEW birthday_today somehow
+            rs.next();
+
+            return rs.getBigDecimal("messages_today_by");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
 
     public Person personByEmail(Email email) {
