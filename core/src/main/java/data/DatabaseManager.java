@@ -71,8 +71,33 @@ public class DatabaseManager {
     }
 
     public Person personByID(Integer ID) {
-        // TODO: implement
-        return null;
+        String query = String.format("SELECT * FROM person_by_id('%s')",ID);
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            Person person;
+            if (rs.next()) {
+                person = new Person(
+                        rs.getInt(PERSON_ID_COL),
+                        rs.getString(PERSON_FIRST_NAME_COL),
+                        rs.getString(PERSON_LAST_NAME_COL),
+                        rs.getDate(PERSON_BIRTHDAY_COL),
+                        rs.getString(PERSON_PHONE_COL),
+                        new Email(rs.getString(PERSON_EMAIL_COL)),
+                        rs.getString(PERSON_META_COL)
+                );
+            } else throw new RuntimeException();
+
+            if (rs.next()) throw new RuntimeException();
+
+            return person;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     // TODO: method to add messages and files
@@ -83,8 +108,7 @@ public class DatabaseManager {
 
 
     public Person personByEmail(Email email) {
-        // TODO: replace SELECT with procedure call
-        String query = String.format("SELECT * FROM person WHERE %s = '%s'", PERSON_EMAIL_COL, email.getAddress());
+        String query = String.format("SELECT * FROM person_by_email('%s')", email.getAddress());
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -111,6 +135,8 @@ public class DatabaseManager {
             return null;
         }
     }
+
+
 
 }
 
