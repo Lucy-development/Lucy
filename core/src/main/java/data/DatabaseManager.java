@@ -100,14 +100,45 @@ public class DatabaseManager {
         }
 
     }
+    /**
+     * Method for inserting messages into database.
+     */
+    public void insertSentMessageIntoDb(SentMessage sentMessage) {
+        String sql = "INSERT INTO message(timestamp, sender, recipient, content, meta)"
+                + " VALUES (?, ?, ?, ?, ?)";
 
-    // TODO: method to add messages and files
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+
+            statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            statement.setInt(2, sentMessage.getSender().getID());
+            statement.setInt(3, sentMessage.getReceiver().getID());
+            statement.setString(4, sentMessage.getContent());
+            statement.setString(5, sentMessage.getMeta());
+            statement.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    connection.rollback();
+                } catch (SQLException excep) {
+                    throw new RuntimeException("Rollback has failed!");
+                }
+            }
+            e.printStackTrace();
+        }
+    }
+
+
+    // TODO: method to files
 
     // TODO: figure out how to use messages_today_by(int)
     /**
-     * Return sent message count by SenderId
+     * Return sent message count today by SenderId
      */
-    public BigDecimal getSentMessageCount(Integer senderId) {
+    public BigDecimal getSentMessageCountToday(Integer senderId) {
         String query = String.format("SELECT  messages_today_by(%s)", senderId);
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -152,7 +183,6 @@ public class DatabaseManager {
             return null;
         }
     }
-
 
 
 }
