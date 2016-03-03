@@ -11,16 +11,23 @@ html, body {
     height: 100%;
 }
 
+label {
+    display: none;
+}
+
 #header {
     height: 5%;
+    padding-bottom: 1%;
 }
+
 /*TODO: better-looking & not under recipient div when reducing window size*/
+
 #logout {
     background-color: indianred;
     border: none;
-    font-size: 100%;
+    font-size: 2.2vmin;
     font-weight: 200;
-    position: absolute;
+    position: fixed;
     right: 0;
     top: 0;
     margin: 7px;
@@ -33,6 +40,7 @@ html, body {
 
 #container {
     height: 80%;
+    padding-top: 1%;
 }
 
 #contacts {
@@ -89,7 +97,7 @@ h3 {
 
 input {
     padding: 5px;
-    margin: 5px 0;
+    margin: 8px 0;
     position: absolute;
     border: solid 1px #dcdcdc;
     transition: box-shadow 0.3s, border 0.3s;
@@ -103,6 +111,7 @@ input.active { /*TODO: not working*/
 #message {
     width: 48%;
     left: 23%;
+    bottom: 7.5%;
 }
 
 #searchcontact {
@@ -115,5 +124,5 @@ input.active { /*TODO: not working*/
     font-family: "Microsoft YaHei Light";
     position: absolute;
     right: 20%;
-    bottom: 11%;
+    bottom: 9%;
 }
