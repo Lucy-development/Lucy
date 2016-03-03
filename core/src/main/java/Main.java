@@ -27,7 +27,17 @@ public class Main {
 
         // Add additional routes
         get("/hello", (req, res) -> "Lucy");
-        get("/loginsuccess", (req, res) -> "Login successful!");
+
+
+        //TODO: login system
+        //TODO: POST is only safe when we have SSL! We currently don't.
+        // "/login" is the address were the HTML form shall upload the content
+        post("/login", ((request, response) -> {
+            //response.redirect("/hello");// we can to stuff with response
+            //return response;
+            return "LOGGED IN! PS! NO SSL!";
+        }));
+
     }
 
 

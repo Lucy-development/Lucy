@@ -3,6 +3,7 @@ package data;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.Properties;
@@ -71,20 +72,91 @@ public class DatabaseManager {
     }
 
     public Person personByID(Integer ID) {
-        // TODO: implement
-        return null;
+        String query = String.format("SELECT * FROM person_by_id('%s')", ID);
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            Person person;
+            if (rs.next()) {
+                person = new Person(
+                        rs.getInt(PERSON_ID_COL),
+                        rs.getString(PERSON_FIRST_NAME_COL),
+                        rs.getString(PERSON_LAST_NAME_COL),
+                        rs.getDate(PERSON_BIRTHDAY_COL),
+                        rs.getString(PERSON_PHONE_COL),
+                        new Email(rs.getString(PERSON_EMAIL_COL)),
+                        rs.getString(PERSON_META_COL)
+                );
+            } else throw new RuntimeException();
+
+            if (rs.next()) throw new RuntimeException();
+
+            return person;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    /**
+     * Method for inserting messages into database.
+     */
+    public void insertSentMessageIntoDb(SentMessage sentMessage) {
+        String sql = "INSERT INTO message(timestamp, sender, recipient, content, meta)"
+                + " VALUES (?, ?, ?, ?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+
+            statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+            statement.setInt(2, sentMessage.getSender().getID());
+            statement.setInt(3, sentMessage.getReceiver().getID());
+            statement.setString(4, sentMessage.getContent());
+            statement.setString(5, sentMessage.getMeta());
+            statement.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    connection.rollback();
+                } catch (SQLException excep) {
+                    throw new RuntimeException("Rollback has failed!");
+                }
+            }
+            e.printStackTrace();
+        }
     }
 
-    // TODO: method to add messages and files
+
+    // TODO: method to files
 
     // TODO: figure out how to use messages_today_by(int)
+    /**
+     * Return sent message count today by SenderId
+     */
+    public BigDecimal getSentMessageCountToday(Integer senderId) {
+        String query = String.format("SELECT  messages_today_by(%s)", senderId);
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
 
-    // TODO: use VIEW birthday_today somehow
+            rs.next();
+
+            return rs.getBigDecimal("messages_today_by");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
 
 
     public Person personByEmail(Email email) {
-        // TODO: replace SELECT with procedure call
-        String query = String.format("SELECT * FROM person WHERE %s = '%s'", PERSON_EMAIL_COL, email.getAddress());
+        String query = String.format("SELECT * FROM person_by_email('%s')", email.getAddress());
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {
@@ -111,6 +183,7 @@ public class DatabaseManager {
             return null;
         }
     }
+
 
 }
 
