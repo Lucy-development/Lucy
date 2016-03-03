@@ -6,7 +6,7 @@ import java.sql.Timestamp;
  * Created on 25/02/2016.
  */
 public class SentFile implements Sendable {
-    // TODO: impleemnt
+    // TODO: implement
 
     @Override
     public Integer getID() {
@@ -19,12 +19,12 @@ public class SentFile implements Sendable {
     }
 
     @Override
-    public Person getSender() {
+    public Integer getSender() {
         return null;
     }
 
     @Override
-    public Person getReceiver() {
+    public Integer getReceiver() {
         return null;
     }
 

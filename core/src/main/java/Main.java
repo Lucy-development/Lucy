@@ -30,11 +30,11 @@ public class Main {
 
 
         //TODO: login system
-        //TODO: POST is only safe when we have SSL! We currently don't.
-        // "/login" is the address were the HTML form shall upload the content
+        // "/login" is the address where the HTML form shall upload the content
         post("/login", ((request, response) -> {
             //response.redirect("/hello");// we can to stuff with response
             //return response;
+
             return "LOGGED IN! PS! NO SSL!";
         }));
 
@@ -53,6 +53,7 @@ public class Main {
         User sender = User.getBySession(senderSession);
 
         // Send this info as JSON
+        // TODO: should change this to XML or something to get points?
         if (receiverSession.isOpen()) {
             receiverSession.getRemote().sendString(String.valueOf(
                     new JSONObject()

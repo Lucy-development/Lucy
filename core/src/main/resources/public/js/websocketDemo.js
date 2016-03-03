@@ -26,6 +26,7 @@ id("message").addEventListener("keypress", function (e) {
 // Send a message if it's not empty, then clear the input field
 function sendMessage(message, receiver) {
     // TODO: should use JSON instead of this silly "receiver;message" format
+    // TODO: or should we use XML or something for points?
     if (message !== "") {
         webSocket.send(receiver + ";" + message);
         id("message").value = "";

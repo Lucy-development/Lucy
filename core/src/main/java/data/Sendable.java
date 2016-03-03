@@ -11,9 +11,9 @@ public interface Sendable {
 
     Timestamp getTime();
 
-    Person getSender();
+    Integer getSender();
 
-    Person getReceiver();
+    Integer getReceiver();
 
     String getMeta();
 
