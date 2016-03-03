@@ -14,6 +14,7 @@ html, body {
 #header {
     height: 5%;
 }
+
 /*TODO: better-looking & not under recipient div when reducing window size*/
 #logout {
     background-color: indianred;
