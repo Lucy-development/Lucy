@@ -40,7 +40,7 @@ div#button-wrap {
 }
 
 button {
-    background-image: url("ikoon_id.gif");
+    background-image: url("../graphics/ikoon_id.gif");
     width: 82px;
     height: 28px;
 }
