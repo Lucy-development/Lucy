@@ -1,27 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>WebsSockets</title>
-    <link rel="stylesheet" href="css/style.css">
-    <script src="js/fb/fb_sdk.js"></script>
+    <meta charset="UTF-8">
+    <title>Lucy</title>
+    <link rel="stylesheet" href="css/stylemain.css">
+    <link rel="stylesheet" href="css/stylemainsize.css">
+    <script src="js/websocketDemo.js" async></script>
 </head>
+
 <body>
-
-<div id="chatControls">
-    <input id="receiver" placeholder="Receiver ID">
-    <input id="message" placeholder="Type your message">
-    <button id="send">Send</button>
+<div id="wrapper">
+    <div id="header">
+        <button id="logout">Log out</button>
+    </div>
+    <div id="container">
+        <div id="contacts">
+            <div>
+                <!--Currently for getting the recepient's ID, later to search contacts from list-->
+                <label for="searchcontact">Search</label>
+                <input type="text" id="searchcontact" placeholder="Receiver ID">
+            </div>
+            <!--TODO: Contacts as unordered list?-->
+            <div id="contactlist">
+                <ul>
+                </ul>
+            </div>
+        </div>
+        <!--TODO: text goes out of-->
+        <div id="messagebox"></div>
+        <div id="recepient">
+            <h3 id="contact">Contact</h3>
+        </div>
+        <!--TODO: Settings box here?-->
+        <button id="settingsbutton">Settings</button>
+    </div>
+    <div id="footer">
+        <label for="message">Message</label>
+        <input type="text" id="message" placeholder="Insert message or drop files here">
+        <button id="send">Send</button>
+        <!--TODO: Search button here?-->
+    </div>
 </div>
-<div id="chat">    <!-- Built by JS --> </div>
-<script src="js/websocketDemo.js"></script>
-
-<div
-        class="fb-like"
-        data-share="true"
-        data-width="450"
-        data-show-faces="true">
-</div>
-
 </body>
 </html>

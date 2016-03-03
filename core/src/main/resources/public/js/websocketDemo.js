@@ -12,13 +12,13 @@ webSocket.onclose = function () {
 
 // "Send" button listener
 id("send").addEventListener("click", function () {
-    sendMessage(id("message").value, id("receiver").value);
+    sendMessage(id("message").value, id("searchcontact").value);
 });
 
 // "Enter" listener
 id("message").addEventListener("keypress", function (e) {
     if (e.keyCode === 13) {
-        sendMessage(id("message").value, id("receiver").value);
+        sendMessage(id("message").value, id("searchcontact").value);
     }
 });
 
@@ -38,7 +38,7 @@ function addToChat(msg) {
     var data = JSON.parse(msg.data);
     // Fetch sender and message content from JSON and add it to GUI
     var message = data.from + ": " + data.msg + "<br />";
-    insert("chat", message);
+    insert("messagebox", message);
 }
 
 // Helper function for inserting HTML as the first child of an element
