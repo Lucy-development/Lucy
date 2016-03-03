@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -34,6 +36,7 @@ public class DatabaseManager {
     private final String FILE_RECEIVER_COL = "recipient";
     private final String FILE_FILE_COL = "file";
     private final String FILE_META_COL = "meta";
+    private final String PERSON_FRIENDS_COL = "person_friends";
     private Connection connection;
 
 
@@ -131,10 +134,50 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Method for retrieving contact id's from the database.
+     */
+    private List<Integer> getContactFriends(Integer ID) {
+        String sql = String.format("SELECT person_friends(%s)", ID);
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            List<Integer> contactFriends = new ArrayList<>();
+            while (rs.next()) {
+                contactFriends.add(rs.getInt(PERSON_FRIENDS_COL));
+            }
+            return contactFriends;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * @param ID - The ID of the person which contact we want to retrieve
+     * @return List of friends
+     */
+    public List<Person> getFriends(Integer ID) {
+        List<Person> friends = new ArrayList<>();
+        getContactFriends(ID).forEach(id -> friends.add(personByID(id)));
+        return friends;
+    }
+
+    /**
+     * @param email - The email of the person which contact we want to retrieve
+     * @return List of friends
+     */
+    public List<Person> getFriends(Email email) {
+        return getFriends(personByEmail(email).getID());
+    }
+
 
     // TODO: method to files
 
     // TODO: figure out how to use messages_today_by(int)
+
     /**
      * Return sent message count today by SenderId
      */
@@ -144,7 +187,6 @@ public class DatabaseManager {
              ResultSet rs = stmt.executeQuery(query)) {
 
             rs.next();
-
             return rs.getBigDecimal("messages_today_by");
 
         } catch (SQLException e) {
@@ -183,7 +225,6 @@ public class DatabaseManager {
             return null;
         }
     }
-
 
 }
 
