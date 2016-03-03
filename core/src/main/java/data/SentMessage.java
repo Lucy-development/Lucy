@@ -9,18 +9,28 @@ import java.sql.Timestamp;
 public class SentMessage implements Sendable {
     private Integer id = -1;
     private Timestamp time;
-    private Person sender;
-    private Person receiver;
+    private Integer sender;
+    private Integer receiver;
     private String meta;
     private String content;
 
-    public SentMessage(Timestamp time, Person sender, Person receiver, String meta, String content) {
+    public SentMessage(Timestamp time, Integer sender, Integer receiver, String meta, String content) {
         this.time = time;
         this.sender = sender;
         this.receiver = receiver;
         this.meta = meta;
         this.content = content;
     }
+
+
+    public SentMessage(Timestamp time, Integer sender, Integer receiver, String content) {
+        this.time = time;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = content;
+    }
+
+
 
     @Override
     public Integer getID() {
@@ -34,12 +44,12 @@ public class SentMessage implements Sendable {
     }
 
     @Override
-    public Person getSender() {
+    public Integer getSender() {
         return sender;
     }
 
     @Override
-    public Person getReceiver() {
+    public Integer getReceiver() {
         return receiver;
     }
 
@@ -50,5 +60,17 @@ public class SentMessage implements Sendable {
 
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public String toString() {
+        return "SentMessage{" +
+                "id=" + id +
+                ", time=" + time +
+                ", sender=" + sender +
+                ", receiver=" + receiver +
+                ", meta='" + meta + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

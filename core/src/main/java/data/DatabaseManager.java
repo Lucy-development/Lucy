@@ -15,6 +15,7 @@ import java.util.Properties;
  */
 
 //TODO Add exception handling
+    // TODO: Remove duplicate code
 public class DatabaseManager {
 
     private final String PERSON_ID_COL = "id";
@@ -74,7 +75,7 @@ public class DatabaseManager {
         if (connection != null) connection.close();
     }
 
-    public Person personByID(Integer ID) {
+    public Person getPersonByID(Integer ID) {
         String query = String.format("SELECT * FROM person_by_id('%s')", ID);
 
         try (Statement stmt = connection.createStatement();
@@ -103,6 +104,7 @@ public class DatabaseManager {
         }
 
     }
+
     /**
      * Method for inserting messages into database.
      */
@@ -114,8 +116,8 @@ public class DatabaseManager {
             connection.setAutoCommit(false);
 
             statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            statement.setInt(2, sentMessage.getSender().getID());
-            statement.setInt(3, sentMessage.getReceiver().getID());
+            statement.setInt(2, sentMessage.getSender());
+            statement.setInt(3, sentMessage.getReceiver());
             statement.setString(4, sentMessage.getContent());
             statement.setString(5, sentMessage.getMeta());
             statement.executeUpdate();
@@ -131,6 +133,100 @@ public class DatabaseManager {
                 }
             }
             e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * Method for inserting person into database.
+     */
+    public void insertPersonIntoDb(Person person) {
+        String sql = "INSERT INTO person(f_name,l_name,b_day,email,phone,meta)"
+                + " VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+
+            statement.setString(1, person.getFirstName());
+            statement.setString(2, person.getLastName());
+            statement.setDate(3, person.getBirthday());
+            statement.setString(4, person.getEmail().getAddress());
+            statement.setString(5, person.getPhone());
+            statement.setString(6, person.getMeta());
+            statement.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    connection.rollback();
+                } catch (SQLException excep) {
+                    throw new RuntimeException("Rollback has failed!");
+                }
+            }
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     * method for retrieving messages by sender ID
+     *
+     * @param count - N.o messages to fetch
+     */
+    public List<SentMessage> retrieveMessagesBySender(Integer senderID, Integer count) {
+        String sql = String.format("SELECT * FROM messages_by_sender_id(%s,%s)", senderID, count);
+        return retrieveMessages(sql);
+    }
+
+    /**
+     * method for retrieving messages by sender email
+     *
+     * @param count - N.o messages to fetch
+     */
+    public List<SentMessage> retrieveMessagesBySender(Email senderEmail, Integer count) {
+        String sql = String.format("SELECT * FROM messages_by_sender_id(%s,%s)", getPersonByEmail(senderEmail).getID(), count);
+        return retrieveMessages(sql);
+    }
+
+
+    /**
+     * method for retrieving messages by recipient ID
+     *
+     * @param count - N.o messages to fetch
+     */
+    public List<SentMessage> retrieveMessagesByRecipient(Integer recipientID, Integer count) {
+        String sql = String.format("SELECT * FROM messages_by_recipient_id(%s,%s)", recipientID, count);
+        return retrieveMessages(sql);
+    }
+
+    /**
+     * method for retrieving messages by recipient email
+     *
+     * @param count - N.o messages to fetch
+     */
+    public List<SentMessage> retrieveMessagesByRecipient(Email recipientEmail, Integer count) {
+        String sql = String.format("SELECT * FROM messages_by_recipient_id(%s,%s)", getPersonByEmail(recipientEmail).getID(), count);
+        return retrieveMessages(sql);
+    }
+
+    /**
+     * General method for messages retrieval
+     */
+    private List<SentMessage> retrieveMessages(String sql) {
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            List<SentMessage> messages = new ArrayList<>();
+
+            while (rs.next()) {
+                messages.add(new SentMessage(rs.getTimestamp(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+            }
+            return messages;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 
@@ -161,7 +257,7 @@ public class DatabaseManager {
      */
     public List<Person> getFriends(Integer ID) {
         List<Person> friends = new ArrayList<>();
-        getContactFriends(ID).forEach(id -> friends.add(personByID(id)));
+        getContactFriends(ID).forEach(id -> friends.add(getPersonByID(id)));
         return friends;
     }
 
@@ -170,7 +266,7 @@ public class DatabaseManager {
      * @return List of friends
      */
     public List<Person> getFriends(Email email) {
-        return getFriends(personByEmail(email).getID());
+        return getFriends(getPersonByEmail(email).getID());
     }
 
 
@@ -193,11 +289,10 @@ public class DatabaseManager {
             e.printStackTrace();
             return null;
         }
-
     }
 
 
-    public Person personByEmail(Email email) {
+    public Person getPersonByEmail(Email email) {
         String query = String.format("SELECT * FROM person_by_email('%s')", email.getAddress());
 
         try (Statement stmt = connection.createStatement();
