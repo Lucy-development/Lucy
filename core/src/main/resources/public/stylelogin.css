@@ -1,0 +1,46 @@
+body {
+    background-color: ghostwhite;
+}
+
+h1 {
+    /*TODO: better resolution*/
+    text-align: center;
+    font-family: Castellar;
+    font-weight: 100;
+    color: darkgray;
+    font-size: 25vmin;
+    text-shadow: 1px 1px 1px #c4c4c4;
+}
+div#container {
+    /*TODO: Get this to stay on screen when reducing window size*/
+    background-color: #ECECED;
+    width: 25%;
+    height: 18%;
+    margin: 2% 37%;
+    border-radius: 7%;
+    min-width: 100px;
+    max-height: 160px;
+}
+
+div#login-text {
+    padding: 1px;
+}
+
+h3 {
+    font-family: Arial;
+    font-weight: bold;
+    color: darkgray;
+    text-align: center;
+    font-size: 3vmin;
+}
+/*TODO: Move upwards*/
+div#button-wrap {
+    width: 82px;
+    margin: 10% auto;
+}
+
+button {
+    background-image: url("ikoon_id.gif");
+    width: 82px;
+    height: 28px;
+}

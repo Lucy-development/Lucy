@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <!--http-equiv="Content-Type" content="text/html"-->
     <title>Lucy</title>
-    <link rel="stylesheet" href="style login.css">
+    <link rel="stylesheet" href="stylelogin.css">
 </head>
 <body>
-
 <h1>Lucy</h1>
 
-<div class = "center" id = "parent">
+<div id="container">
 
-<div id = "child">Login</div>
+    <div id="login-text">
+        <h3>Login</h3>
+    </div>
 
-    <button></button>
+
+    <!-- Made a from only consisting of a button -->
+    <!-- POST's currently nothing to the server, made it as an example -->
+    <!-- /login is the address were the information will be sent -->
+    <form action="file:///C:/login" method="post" id="password">
+        <div id="button-wrap">
+            <button type="submit"></button>
+        </div>
+    </form>
 
 </div>
 </body>
