@@ -1,4 +1,5 @@
 import data.DatabaseManager;
+import data.SentMessage;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,6 +7,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,7 +54,7 @@ public class Main {
             System.out.println(req.body());
 
             boolean authSuccessful = true;
-            if(authSuccessful) {
+            if (authSuccessful) {
                 res.redirect("/chat");
             } else {
                 // TODO: generate res & return
@@ -64,7 +66,7 @@ public class Main {
 
 
     // TODO: this method should definitely not be in Main
-    public static void sendMessage(Session senderSession, String message) throws JSONException, IOException {
+    public static void sendMessage(Session senderSession, String message, boolean onConnect) throws JSONException, IOException {
         // TODO: handle exceptions appropriately
 
         // TODO: figure out how to simplify this; we shouldn't need so many duplicating data structures
@@ -74,12 +76,16 @@ public class Main {
         String msg = message.split(";")[1];
         User sender = User.getBySession(senderSession);
 
+        // Write msg to database
+        if (!onConnect)
+            getDb().insertSentMessageIntoDb(new SentMessage(new Timestamp(System.currentTimeMillis()), Integer.parseInt(sender.getID()), Integer.parseInt(receiver.getID()), msg));
+
         // Send this info as JSON
         // TODO: should change this to XML or something to get points?
         if (receiverSession.isOpen()) {
             receiverSession.getRemote().sendString(String.valueOf(
                     new JSONObject()
-                            .put("from", sender.getId())
+                            .put("from", sender.getID())
                             .put("msg", msg)
             ));
         } else {

@@ -31,13 +31,13 @@ public class ChatWebSocketHandler {
 
         Main.sendMessage(userSession, i + "; You have sent today " + Main.getDb().getSentMessageCountToday(i) + " messages." +
                 lineSeparator + "Logged in with ID: " + i +
-                lineSeparator + getLastReceivedMessage(i));
+                lineSeparator + getLastReceivedMessage(i), true);
         i++;
     }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, JSONException {
-        Main.sendMessage(session, message);
+        Main.sendMessage(session, message, false);
     }
 
     /**

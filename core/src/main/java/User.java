@@ -23,7 +23,7 @@ public class User {
 
     public static User getById(String id) {
         for (User user : users.values()) {
-            if (user.getId().equals(id)) {
+            if (user.getID().equals(id)) {
                 return user;
             }
         }
@@ -38,7 +38,7 @@ public class User {
         return name;
     }
 
-    public String getId() {
+    public String getID() {
         return id;
     }
 
