@@ -1,21 +1,19 @@
+import authentication.facebook.FBValidation;
 import data.DatabaseManager;
 import data.SentMessage;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
+import util.Util;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
 import static spark.Spark.*;
 
-/**
- * Created on 15/02/2016.
- */
+
 public class Main {
     static Map<User, Session> sessionMap = new HashMap<>();
     private static DatabaseManager db;
@@ -23,12 +21,12 @@ public class Main {
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
 
-        try {
-            db = new DatabaseManager();
-        } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
+//        try {
+//            db = new DatabaseManager();
+//        } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
+//            e.printStackTrace();
+//            throw new RuntimeException();
+//        }
 
         // Fetch static layout files
         staticFileLocation("public");
@@ -51,11 +49,21 @@ public class Main {
 
         post("/login", (req, res) -> {
 
-            System.out.println(req.body());
+            Map<String, String> params = Util.parseQueryString(req.body());
 
-            boolean authSuccessful = true;
+            if (!params.containsKey("accesstoken") || !params.containsKey("userid")) {
+                throw new RuntimeException("Invalid query params: " + params);
+            }
+
+            String userID = params.get("userid");
+            String accessToken = params.get("accesstoken");
+
+            boolean authSuccessful = FBValidation.checkFBTokenValidity(userID, accessToken);
+
             if (authSuccessful) {
-                res.redirect("/chat");
+                System.out.println("Authentication successful for UID " + userID);
+                // TODO: somehow assign userID to session?
+                // TODO: redirect to /chat
             } else {
                 // TODO: generate res & return
             }
@@ -63,6 +71,8 @@ public class Main {
         });
 
     }
+
+
 
 
     // TODO: this method should definitely not be in Main
