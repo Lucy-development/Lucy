@@ -1,8 +1,11 @@
+import data.DatabaseManager;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,11 +15,18 @@ import static spark.Spark.*;
  * Created on 15/02/2016.
  */
 public class Main {
-
     static Map<User, Session> sessionMap = new HashMap<>();
+    private static DatabaseManager db;
 
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
+
+        try {
+            db = new DatabaseManager();
+        } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
 
         // Fetch static layout files
         staticFileLocation("public");
@@ -77,5 +87,9 @@ public class Main {
             return Integer.parseInt(processBuilder.environment().get("PORT"));
         }
         return 4567;
+    }
+
+    public static DatabaseManager getDb() {
+        return db;
     }
 }

@@ -28,13 +28,27 @@ public class ChatWebSocketHandler {
                 userSession
         );
 
-        Main.sendMessage(userSession, i + ";" + "Logged in with ID: " + i);
+        Main.sendMessage(userSession, i + ";" + "Logged in with ID: " + i + System.getProperty("line.separator") + getLastReceivedMessage(i));
         i++;
     }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, JSONException {
         Main.sendMessage(session, message);
+    }
+
+    /**
+     * Method returns last send message
+     */
+    private StringBuilder getLastReceivedMessage(Integer messageSenderID) {
+        StringBuilder lastReceivedMessage = new StringBuilder();
+
+        // Lambda is for case where retrievedMessage list is empty, then nothing is added to the StringBuilder.
+        // Otherwise person firstname + content is added to the StringBuilder
+        Main.getDb().retrieveMessagesByRecipient(messageSenderID, 1).forEach(msg ->
+                lastReceivedMessage.append
+                        (Main.getDb().getPersonByID(msg.getSender()).getFirstName()).append(": ").append(msg.getContent()));
+        return lastReceivedMessage;
     }
 
 }
