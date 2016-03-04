@@ -23,6 +23,7 @@ public class Main {
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
 
+        // Do not comment it out without changing ChatWebSocketHandler!
         try {
             db = new DatabaseManager();
         } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
