@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import util.Util;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +23,12 @@ public class Main {
     public static void main(String[] args) {
         port(getHerokuAssignedPort());
 
-//        try {
-//            db = new DatabaseManager();
-//        } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
-//            e.printStackTrace();
-//            throw new RuntimeException();
-//        }
+        try {
+            db = new DatabaseManager();
+        } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
 
         // Fetch static layout files
         staticFileLocation("public");

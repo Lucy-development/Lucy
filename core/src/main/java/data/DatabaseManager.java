@@ -15,7 +15,7 @@ import java.util.Properties;
  */
 
 //TODO Add exception handling
-    // TODO: Remove duplicate code
+// TODO: Remove duplicate code
 public class DatabaseManager {
 
     private final String PERSON_ID_COL = "id";
@@ -89,7 +89,7 @@ public class DatabaseManager {
                         rs.getString(PERSON_LAST_NAME_COL),
                         rs.getDate(PERSON_BIRTHDAY_COL),
                         rs.getString(PERSON_PHONE_COL),
-                        new Email(rs.getString(PERSON_EMAIL_COL)),
+                        rs.getString(PERSON_EMAIL_COL),
                         rs.getString(PERSON_META_COL)
                 );
             } else throw new RuntimeException();
@@ -150,7 +150,7 @@ public class DatabaseManager {
             statement.setString(1, person.getFirstName());
             statement.setString(2, person.getLastName());
             statement.setDate(3, person.getBirthday());
-            statement.setString(4, person.getEmail().getAddress());
+            statement.setString(4, person.getEmail());
             statement.setString(5, person.getPhone());
             statement.setString(6, person.getMeta());
             statement.executeUpdate();
@@ -185,7 +185,7 @@ public class DatabaseManager {
      *
      * @param count - N.o messages to fetch
      */
-    public List<SentMessage> retrieveMessagesBySender(Email senderEmail, Integer count) {
+    public List<SentMessage> retrieveMessagesBySender(String senderEmail, Integer count) {
         String sql = String.format("SELECT * FROM messages_by_sender_id(%s,%s)", getPersonByEmail(senderEmail).getID(), count);
         return retrieveMessages(sql);
     }
@@ -206,7 +206,7 @@ public class DatabaseManager {
      *
      * @param count - N.o messages to fetch
      */
-    public List<SentMessage> retrieveMessagesByRecipient(Email recipientEmail, Integer count) {
+    public List<SentMessage> retrieveMessagesByRecipient(String recipientEmail, Integer count) {
         String sql = String.format("SELECT * FROM messages_by_recipient_id(%s,%s)", getPersonByEmail(recipientEmail).getID(), count);
         return retrieveMessages(sql);
     }
@@ -265,7 +265,7 @@ public class DatabaseManager {
      * @param email - The email of the person which contact we want to retrieve
      * @return List of friends
      */
-    public List<Person> getFriends(Email email) {
+    public List<Person> getFriends(String email) {
         return getFriends(getPersonByEmail(email).getID());
     }
 
@@ -292,8 +292,8 @@ public class DatabaseManager {
     }
 
 
-    public Person getPersonByEmail(Email email) {
-        String query = String.format("SELECT * FROM person_by_email('%s')", email.getAddress());
+    public Person getPersonByEmail(String email) {
+        String query = String.format("SELECT * FROM person_by_email('%s')", email);
 
         try (Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(query)) {

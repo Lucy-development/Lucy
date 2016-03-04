@@ -5,6 +5,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 /**
  * Created on 18/02/2016.
@@ -14,7 +15,7 @@ public class ChatWebSocketHandler {
     private String lineSeparator = System.getProperty("line.separator");
 
     // ID counter
-    private int i = 0;
+    private int i = 1;
 
     @OnWebSocketConnect
     public void onConnect(Session userSession) throws IOException, JSONException {
@@ -29,9 +30,12 @@ public class ChatWebSocketHandler {
                 userSession
         );
 
-        Main.sendMessage(userSession, i + "; You have sent today " + Main.getDb().getSentMessageCountToday(i) + " messages." +
+        BigDecimal msgCountToday = Main.getDb().getSentMessageCountToday(i);
+        String lastMessage = String.valueOf(getLastReceivedMessage(i));
+
+        Main.sendMessage(userSession, i + "; You have sent today " + msgCountToday + " messages." +
                 lineSeparator + "Logged in with ID: " + i +
-                lineSeparator + getLastReceivedMessage(i), true);
+                lineSeparator + lastMessage, true);
         i++;
     }
 
@@ -48,9 +52,19 @@ public class ChatWebSocketHandler {
 
         // Lambda is for case where retrievedMessage list is empty, then nothing is added to the StringBuilder.
         // Otherwise person firstname + content is added to the StringBuilder
-        Main.getDb().retrieveMessagesByRecipient(messageSenderID, 1).forEach(msg ->
-                lastReceivedMessage.append
-                        (Main.getDb().getPersonByID(msg.getSender()).getFirstName()).append(": ").append(msg.getContent()));
+
+        try {
+
+            Main.getDb().retrieveMessagesByRecipient(messageSenderID, 1).forEach(msg ->
+                    lastReceivedMessage.append
+                            (Main.getDb().getPersonByID(msg.getSender()).getFirstName()).append(": ").append(msg.getContent()));
+        }catch (RuntimeException e){
+            //TODO: This should not be possible
+            System.err.println("User not found in the database!");
+            return new StringBuilder();
+        }
+
+
         return lastReceivedMessage;
     }
 

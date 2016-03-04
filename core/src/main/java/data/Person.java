@@ -1,5 +1,7 @@
 package data;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.sql.Date;
 
 /**
@@ -11,28 +13,27 @@ public class Person {
     private String firstName;
     private String lastName;
     private Date birthday;
-    private Email email;
+    private String email;
     private String phone;
     private String meta;
 
-    public Person(Integer ID, String firstName, String lastName, Date birthday, String phone, Email email, String meta) {
+    public Person(Integer ID, String firstName, String lastName, Date birthday, String phone, String email, String meta) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.birthday = birthday;
         this.phone = phone;
         this.email = email;
+        try {
+            //TODO: Error handling. PS! Remove invalid email from database.
+            new InternetAddress(email).validate();
+        } catch (AddressException e) {
+            System.err.print("Invalid Email!");
+        }
         this.meta = meta;
     }
 
-    public Person(String firstName, String lastName, Date birthday, Email email, String phone, String meta) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.birthday = birthday;
-        this.email = email;
-        this.phone = phone;
-        this.meta = meta;
-    }
+
 
     public Integer getID() {
         return ID;
@@ -54,7 +55,7 @@ public class Person {
         return birthday;
     }
 
-    public Email getEmail() {
+    public String getEmail() {
         return email;
     }
 
