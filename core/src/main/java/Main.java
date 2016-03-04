@@ -42,11 +42,15 @@ public class Main {
         // LOGIN
         get("/login", (req, res) -> {
             // TODO: return login screen
+            System.err.println("test");
             return "";
         });
 
 
         post("/login", (req, res) -> {
+
+            System.out.println(req.body());
+
             boolean authSuccessful = true;
             if(authSuccessful) {
                 res.redirect("/chat");
