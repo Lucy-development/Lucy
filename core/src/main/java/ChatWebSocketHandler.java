@@ -11,6 +11,7 @@ import java.io.IOException;
  */
 @WebSocket
 public class ChatWebSocketHandler {
+    private String lineSeparator = System.getProperty("line.separator");
 
     // ID counter
     private int i = 0;
@@ -28,7 +29,9 @@ public class ChatWebSocketHandler {
                 userSession
         );
 
-        Main.sendMessage(userSession, i + ";" + "Logged in with ID: " + i + System.getProperty("line.separator") + getLastReceivedMessage(i));
+        Main.sendMessage(userSession, i + "; You have sent today " + Main.getDb().getSentMessageCountToday(i) + " messages." +
+                lineSeparator + "Logged in with ID: " + i +
+                lineSeparator + getLastReceivedMessage(i));
         i++;
     }
 
@@ -50,5 +53,6 @@ public class ChatWebSocketHandler {
                         (Main.getDb().getPersonByID(msg.getSender()).getFirstName()).append(": ").append(msg.getContent()));
         return lastReceivedMessage;
     }
+
 
 }
