@@ -39,14 +39,22 @@ public class Main {
         get("/hello", (req, res) -> "Lucy");
 
 
-        //TODO: login system
-        // "/login" is the address where the HTML form shall upload the content
-        post("/login", ((request, response) -> {
-            //response.redirect("/hello");// we can to stuff with response
-            //return response;
+        // LOGIN
+        get("/login", (req, res) -> {
+            // TODO: return login screen
+            return "";
+        });
 
-            return "LOGGED IN! PS! NO SSL!";
-        }));
+
+        post("/login", (req, res) -> {
+            boolean authSuccessful = true;
+            if(authSuccessful) {
+                res.redirect("/chat");
+            } else {
+                // TODO: generate res & return
+            }
+            return null;
+        });
 
     }
 
