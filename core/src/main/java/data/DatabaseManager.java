@@ -1,7 +1,5 @@
 package data;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
@@ -45,7 +43,10 @@ public class DatabaseManager {
         Properties XMLprops = new Properties();
 
         // Load XML file
-        XMLprops.loadFromXML(new FileInputStream(new File(DatabaseManager.class.getClassLoader().getResource("db.xml").toURI())));
+        XMLprops.loadFromXML((DatabaseManager.class.getClassLoader().getResourceAsStream("db.xml")));
+
+
+
         // Load driver
         Class.forName("org.postgresql.Driver");
         // Read from XML
