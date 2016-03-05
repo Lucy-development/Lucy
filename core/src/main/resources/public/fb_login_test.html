@@ -14,16 +14,14 @@
         http = new XMLHttpRequest();
         http.open("POST", url, true);
         http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        http.setRequestHeader("Content-length", params.length);
-        http.setRequestHeader("Connection", "close");
 
         // Request state change handler
         http.onreadystatechange = function() {
-            if(http.readyState == 4 && http.status == 200) {
-                alert(http.responseText);
+            if (http.readyState == 4 && http.status == 200) {
+                console.log("Auth request finished");
+                window.location = "http://localhost:4567/"
             }
         };
-
         http.send(params);
     }
 

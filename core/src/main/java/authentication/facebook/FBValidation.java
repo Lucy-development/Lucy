@@ -9,8 +9,9 @@ public class FBValidation {
 
     public static boolean checkFBTokenValidity(String userID, String userAccessToken) throws IOException {
 
-        String appID = "555058557990846";
-        String appSecret = "ed76d940ed103d5506e69db62ed24871";
+        // Correct env vars must be set on local machine if running server locally
+        String appID = System.getenv("FACEBOOK_APP_ID");
+        String appSecret = System.getenv("FACEBOOK_SECRET");
 
         String response =
                 Request.Get("https://graph.facebook.com/debug_token" +
@@ -18,13 +19,12 @@ public class FBValidation {
                         "&access_token=" + appID + "%7C" + appSecret
                 ).execute().returnContent().asString();
 
-        System.out.println(response);
-
         if (userID.equals(FBValidationResponse.getInstance(response).userID())) {
-            System.out.println("Accesstoken validation successful");
+            System.out.println("Facebook user access token validation successful.");
             return true;
         } else {
-            System.out.println("Accesstoken validation failed");
+            System.out.println("Facebook user access token validation failed!");
+            System.out.println("Validation response was " + response);
             return false;
         }
     }

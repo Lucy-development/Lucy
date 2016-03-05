@@ -21,61 +21,52 @@ public class Main {
     private static DatabaseManager db;
 
     public static void main(String[] args) {
-        port(getHerokuAssignedPort());
-
-        // Do not comment it out without changing ChatWebSocketHandler!
         try {
-            db = new DatabaseManager();
+            Main.db = new DatabaseManager();
         } catch (ClassNotFoundException | URISyntaxException | IOException | SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
+        // Set Heroku port
+        port(getHerokuAssignedPort());
         // Fetch static layout files
         staticFileLocation("public");
         // Set up a WebSocket to listen to /chat using ChatWebSocketHandler as a request handler
         webSocket("/chat", ChatWebSocketHandler.class);
         // Initialize WebSocket
-        init();
+        init();  // TODO: probably not needed since we're initializing more routes afterwards
 
-        // Add additional routes
-        get("/hello", (req, res) -> "Lucy");
-
-
-        // LOGIN
-        get("/login", (req, res) -> {
-            // TODO: return login screen
-            System.err.println("test");
-            return "";
-        });
-
+        // TODO: should allow requests only from needed origins
+        // Allow requests to /login and to / from any origin
+        before("/login", (req, res) -> res.header("Access-Control-Allow-Origin", "*"));
+        before("/", (req, res) -> res.header("Access-Control-Allow-Origin", "*"));
 
         post("/login", (req, res) -> {
-
+            // Get userID and FB access token from request body
             Map<String, String> params = Util.parseQueryString(req.body());
-
             if (!params.containsKey("accesstoken") || !params.containsKey("userid")) {
                 throw new RuntimeException("Invalid query params: " + params);
             }
-
             String userID = params.get("userid");
             String accessToken = params.get("accesstoken");
 
+            // Validate that given FB access token matches given userID
             boolean authSuccessful = FBValidation.checkFBTokenValidity(userID, accessToken);
-
             if (authSuccessful) {
-                System.out.println("Authentication successful for UID " + userID);
+                System.out.println("FB authentication successful for userID " + userID);
+                res.status(200); // This should trigger a redirect to / in browser
+                res.redirect("/"); // Fallback if browser does not support AJAX
+                halt();
                 // TODO: somehow assign userID to session?
-                // TODO: redirect to /chat
             } else {
-                // TODO: generate res & return
+                // 403 FORBIDDEN
+                res.status(403);
+                halt(403);
             }
             return null;
         });
 
     }
-
-
 
 
     // TODO: this method should definitely not be in Main
