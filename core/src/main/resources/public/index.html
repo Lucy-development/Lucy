@@ -6,12 +6,16 @@
     <link rel="stylesheet" href="css/stylemain.css">
     <link rel="stylesheet" href="css/stylemainsize.css">
     <script src="js/websocketDemo.js" async></script>
+    <script src="js/languages.js" async></script>
 </head>
 
 <body>
 <div id="wrapper">
     <div id="header">
-        <button id="logout">Log out</button>
+        <button class="headerbutton" id="logout">Log out</button>
+        <!--TODO: en and est buttons to react normally when reducing window size-->
+        <button class="headerbutton" id="en" onclick=changeLanguage("en")>En</button>
+        <button class="headerbutton" id="est" onclick=changeLanguage("et")>Est</button>
     </div>
     <div id="container">
         <div id="contacts">

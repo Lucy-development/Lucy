@@ -1,4 +1,5 @@
-/*TODO: Logout button and contact heading to change according to the screen size*/
+/*TODO: Contact heading to change according to window size*/
+/*TODO: Messagebox scrollable and wraps text*/
 html, body {
     background-color: ghostwhite;
     height: 100%;
@@ -36,6 +37,24 @@ label {
 
 #logout:hover, #settingsbutton:hover {
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.24), 0 4px 2px 0 rgba(0, 0, 0, 0.19);
+}
+
+#en{
+    left: 4.5vmin;
+
+}
+
+#est{
+    left: 0;
+}
+
+#en, #est {
+    background-color: gainsboro;
+    border-radius: 7px;
+    font-family: "Microsoft YaHei Light";
+    position: absolute;
+    font-size: 1.8vmin;
+    margin: 7px 7px;
 }
 
 #container {

@@ -1,11 +1,18 @@
 
 @media screen and (max-width: 480px){
-    #logout{
+    button.headerbutton{
+        font-size: 12px;
+    }
+
+}
+@media screen and (max-height: 480px){
+    button.headerbutton{
         font-size: 12px;
     }
 }
-@media screen and (max-height: 480px){
-    #logout{
-        font-size: 12px;
+
+@media screen and (max-width: 1260px){
+    #en{
+        left: 5vmin;
     }
 }
