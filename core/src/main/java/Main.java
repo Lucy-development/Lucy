@@ -43,7 +43,7 @@ public class Main {
 
         post("/login", (req, res) -> {
             // Get userID and FB access token from request body
-            Map<String, String> params = Util.parseQueryString(req.body());
+            Map<String, String> params = Util.parseFBAuthJSONQuery(req.body());
             if (!params.containsKey("accesstoken") || !params.containsKey("userid")) {
                 throw new RuntimeException("Invalid query params: " + params);
             }

@@ -10,7 +10,10 @@ function redirectToLogin() {
 function sendAuthRequest(userID, accessToken) {
     // TODO: should also include appID?
     var url = "http://lucy-messaging.herokuapp.com/login";
-    var params = "userid=" + userID + "&accesstoken=" + accessToken;
+    var authObj = new Object();
+    authObj.userid = userID;
+    authObj.accesstoken = accessToken;
+
     req = new XMLHttpRequest();
     req.open("POST", url, true);
     req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -29,7 +32,7 @@ function sendAuthRequest(userID, accessToken) {
             }
         }
     };
-    req.send(params);
+    req.send(JSON.stringify(authObj));
 }
 
 function statusChangeHandler(response) {

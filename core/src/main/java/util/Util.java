@@ -1,6 +1,6 @@
 package util;
 
-import exceptions.MalformedQueryStringException;
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,20 +12,18 @@ public class Util {
         throw new RuntimeException("This is a static class!");
     }
 
-    public static Map<String, String> parseQueryString(String query) {
+    public static Map<String, String> parseFBAuthJSONQuery(String query) {
         Map<String, String> queryParams = new HashMap<>();
-
-        for (String param : query.split("&")) {
-            try {
-                String key = param.split("=")[0];
-                String val = param.split("=")[1];
-                queryParams.put(key, val);
-            } catch (IndexOutOfBoundsException e) {
-                throw new MalformedQueryStringException("Malformed query string: " + query);
-            }
-        }
-
+        Gson gson = new Gson();
+        FBAuthQuery q = gson.fromJson(query, FBAuthQuery.class);
+        queryParams.put("userid", q.userid);
+        queryParams.put("accesstoken", q.accesstoken);
         return queryParams;
+    }
+
+    private class FBAuthQuery {
+        String userid;
+        String accesstoken;
     }
 
 }
