@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Lucy</title>
     <link rel="stylesheet" href="css/stylelogin.css">
+    <script src="js/fb/fb_sdk.js" async></script>
+    <script src="js/fb/fb_login.js" async></script>
 </head>
 <body>
 <h1>Lucy</h1>
@@ -20,7 +22,9 @@
     <!-- /login is the address were the information will be sent -->
     <form action="file:///C:/login" method="post" id="password">
         <div id="button-wrap">
-            <button type="submit"></button>
+            <button type="submit" scope="public_profile,email" onlogin="loginButtonHandler();"></button>
+            <fb:login-button scope="public_profile,email" onlogin="loginButtonHandler();">
+            </fb:login-button>
         </div>
     </form>
 

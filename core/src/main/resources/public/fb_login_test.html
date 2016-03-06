@@ -11,18 +11,18 @@
         // TODO: should also include appID?
         var url = "http://localhost:4567/login";
         var params = "userid=" + userID + "&accesstoken=" + accessToken;
-        http = new XMLHttpRequest();
-        http.open("POST", url, true);
-        http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req = new XMLHttpRequest();
+        req.open("POST", url, true);
+        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
         // Request state change handler
-        http.onreadystatechange = function() {
-            if (http.readyState == 4 && http.status == 200) {
+        req.onreadystatechange = function() {
+            if (req.readyState == 4 && req.status == 200) {
                 console.log("Auth request finished");
                 window.location = "http://localhost:4567/"
             }
         };
-        http.send(params);
+        req.send(params);
     }
 
 
