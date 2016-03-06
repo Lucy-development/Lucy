@@ -16,14 +16,11 @@
         <h2>Login</h2>
     </div>
 
-    <!-- TODO: why is this form's id 'password' and should it POST something?  -->
-    <form action="" method="post" id="password">
-        <div id="button-wrap">
-            <button type="submit" scope="public_profile,email" onlogin="loginButtonHandler();"></button>
-            <fb:login-button scope="public_profile,email" onlogin="loginButtonHandler();">
-            </fb:login-button>
-        </div>
-    </form>
+    <div id="button-wrap">
+        <!--<button id= "idcardbutton" type="submit" scope="public_profile,email" onlogin="loginButtonHandler();"></button>-->
+        <fb:login-button id="loginbutton" size="large" scope="public_profile,email" onlogin="loginButtonHandler();">
+        </fb:login-button>
+    </div>
 
 </div>
 </body>

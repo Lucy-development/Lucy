@@ -37,12 +37,19 @@ h2 {
 
 /*TODO: Move upwards*/
 div#button-wrap {
-    width: 82px;
-    margin: 10% auto;
+    /*margin: 4vmin auto;*/
+    margin: 10% 10vw;
 }
 
-button {
+#idcardbutton {
     background-image: url("../graphics/ikoon_id.gif");
     width: 82px;
     height: 28px;
+}
+
+#loginbutton {
+    /*position: absolute;*/
+    /*top: 71%;*/
+    /*left: 47vw;*/
+    margin: auto auto;
 }

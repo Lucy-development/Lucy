@@ -35,16 +35,16 @@ label {
     border-radius: 7px;
 }
 
-#logout:hover, #settingsbutton:hover {
+#logout:hover, #settingsbutton:hover, #en:hover, #est:hover, #send:hover {
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.24), 0 4px 2px 0 rgba(0, 0, 0, 0.19);
 }
 
-#en{
+#en {
     left: 4.5vmin;
 
 }
 
-#est{
+#est {
     left: 0;
 }
 
@@ -79,6 +79,11 @@ label {
     height: 78%;
     width: 50%;
     border-radius: 2%;
+    white-space: pre-wrap;      /* CSS3 */
+    white-space: -moz-pre-wrap; /* Firefox */
+    white-space: -o-pre-wrap;   /* Opera 7 */
+    word-wrap: break-word;
+    overflow-y: auto;
 }
 
 #recepient {
@@ -107,6 +112,38 @@ h3 {
     position: absolute;
     right: 1%;
     top: 37%
+}
+
+#thingy {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 17px solid gainsboro;
+    display: none;
+    position: absolute;
+    top: 39.5%;
+    right: 3%;
+}
+
+#settingsbox {
+    display: none;
+    /*border: 2px solid gold;*/
+    right: 0;
+    position: absolute;
+    width: 25%;
+    top: 39%;
+}
+
+.settings {
+    border: 1px solid gray;
+    background-color: gainsboro;
+    font-size: 1.8vmin;
+    height: 5.2vmin;
+    /*position: absolute;*/
+    /*right: 0;*/
+    /*left: 0;*/
+
 }
 
 #footer {
