@@ -1,12 +1,15 @@
 
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
 
+var connectionOpen = true;
+
 webSocket.onmessage = function (msg) {
     messageHandler(msg);
 };
 
 webSocket.onclose = function () {
-    addMessageToGUI("--- Connection closed ---");
+    connectionOpen = false;
+    addMessageToGUI("--- Connection closed ---" + "<br />");
 };
 
 elementById("send").addEventListener("click", sendHandler);
@@ -22,7 +25,11 @@ function sendHandler() {
     if (msgContent != "") {
         sendMessage(msgContent, receiver);
         clearMsgInput();
-        addMessageToGUI(composeMessageString("--", msgContent));
+        if (connectionOpen) {
+            addMessageToGUI(composeMessageString("--", msgContent));
+        } else {
+            addMessageToGUI("--- Unable to send message: connection is closed ---" + "<br />");
+        }
     }
 }
 
