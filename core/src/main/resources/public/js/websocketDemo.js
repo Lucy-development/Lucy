@@ -22,6 +22,7 @@ function sendHandler() {
     if (msgContent != "") {
         sendMessage(msgContent, receiver);
         clearMsgInput();
+        addMessageToGUI(composeMessageString("--", msgContent));
     }
 }
 
@@ -42,7 +43,11 @@ function messageHandler(msg) {
 
 function parseMessage(msg) {
     var data = JSON.parse(msg.data);
-    return data.from + ": " + data.msg + "<br />";
+    return composeMessageString(data.from, data.msg);
+}
+
+function composeMessageString(receiver, msgString) {
+    return receiver + ": " + msgString + "<br />";
 }
 
 function addMessageToGUI(msgString) {
