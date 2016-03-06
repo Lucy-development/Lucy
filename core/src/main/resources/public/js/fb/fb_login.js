@@ -1,15 +1,15 @@
 
 function redirectToChat() {
-    window.location = "http://localhost:4567/";
+    window.location = "http://lucy-messaging.herokuapp.com";
 }
 
 function redirectToLogin() {
-    window.location = "http://localhost:4567/login";
+    window.location = "http://lucy-messaging.herokuapp.com/login.html";
 }
 
 function sendAuthRequest(userID, accessToken) {
     // TODO: should also include appID?
-    var url = "http://localhost:4567/login";
+    var url = "http://lucy-messaging.herokuapp.com/login.html";
     var params = "userid=" + userID + "&accesstoken=" + accessToken;
     req = new XMLHttpRequest();
     req.open("POST", url, true);
