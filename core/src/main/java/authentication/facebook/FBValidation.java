@@ -12,7 +12,7 @@ public class FBValidation {
         // Correct env vars must be set on local machine if running server locally
         String appID = System.getenv("FACEBOOK_APP_ID");
         String appSecret = System.getenv("FACEBOOK_SECRET");
-        System.out.println(String.format("Checking FB user access token validity using appID '%s' and appSecret '%s'", appID, appSecret));
+        System.err.println(String.format("Checking FB user access token validity using appID '%s' and appSecret '%s'", appID, appSecret));
 
         String response =
                 Request.Get("https://graph.facebook.com/debug_token" +
@@ -21,11 +21,11 @@ public class FBValidation {
                 ).execute().returnContent().asString();
 
         if (userID.equals(FBValidationResponse.getInstance(response).userID())) {
-            System.out.println("Facebook user access token validation successful.");
+            System.err.println("Facebook user access token validation successful.");
             return true;
         } else {
-            System.out.println("Facebook user access token validation failed!");
-            System.out.println("Validation response was " + response);
+            System.err.println("Facebook user access token validation failed!");
+            System.err.println("Validation response was " + response);
             return false;
         }
     }
