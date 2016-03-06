@@ -33,9 +33,10 @@ public class ChatWebSocketHandler {
         BigDecimal msgCountToday = Main.getDb().getSentMessageCountToday(i);
         String lastMessage = String.valueOf(getLastReceivedMessage(i));
 
-        Main.sendMessage(userSession, i + "; You have sent today " + msgCountToday + " messages." +
-                lineSeparator + "Logged in with ID: " + i +
-                lineSeparator + lastMessage, true);
+        //TODO: next line
+        Main.sendMessage(userSession, "Server: logged in with ID: " + i +
+                "; Messages sent today: " + msgCountToday + ";" +
+                "Logged in with ID: " + i + lastMessage, true);
         i++;
     }
 
@@ -58,7 +59,7 @@ public class ChatWebSocketHandler {
             Main.getDb().retrieveMessagesByRecipient(messageSenderID, 1).forEach(msg ->
                     lastReceivedMessage.append
                             (Main.getDb().getPersonByID(msg.getSender()).getFirstName()).append(": ").append(msg.getContent()));
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             //TODO: This should not be possible
             System.err.println("User not found in the database!");
             return new StringBuilder();
