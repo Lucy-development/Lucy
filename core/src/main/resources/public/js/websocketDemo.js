@@ -1,52 +1,59 @@
 
-// Establish the WebSocket connection and set up event handlers
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
+
 webSocket.onmessage = function (msg) {
-    addToChat(msg);
+    messageHandler(msg);
 };
+
 webSocket.onclose = function () {
-    // TODO: this isn't showing on connection close
-    addToChat("---WebSocket connection closed---")
+    addMessageToGUI("--- Connection closed ---");
 };
 
-
-// "Send" button listener
-id("send").addEventListener("click", function () {
-    sendMessage(id("message").value, id("searchcontact").value);
-});
-
-// "Enter" listener
-id("message").addEventListener("keypress", function (e) {
-    if (e.keyCode === 13) {
-        sendMessage(id("message").value, id("searchcontact").value);
+elementById("send").addEventListener("click", sendHandler);
+elementById("message").addEventListener("keypress", function (key) {
+    if (key.keyCode === 13) {
+        sendHandler();
     }
 });
 
+function sendHandler() {
+    var msgContent = elementById("message").value;
+    var receiver = elementById("searchcontact").value;
+    if (msgContent != "") {
+        sendMessage(msgContent, receiver);
+        clearMsgInput();
+    }
+}
 
-// Send a message if it's not empty, then clear the input field
+function clearMsgInput() {
+    elementById("message").value = "";
+}
+
 function sendMessage(message, receiver) {
     // TODO: should use JSON instead of this silly "receiver;message" format
     // TODO: or should we use XML or something for points?
-    if (message !== "") {
-        webSocket.send(receiver + ";" + message);
-        id("message").value = "";
-    }
+    webSocket.send(receiver + ";" + message);
 }
 
-// Update chat
-function addToChat(msg) {
+function messageHandler(msg) {
+    var messageSting = parseMessage(msg);
+    addMessageToGUI(messageSting);
+}
+
+function parseMessage(msg) {
     var data = JSON.parse(msg.data);
-    // Fetch sender and message content from JSON and add it to GUI
-    var message = data.from + ": " + data.msg + "<br />";
-    insert("messagebox", message);
+    return data.from + ": " + data.msg + "<br />";
 }
 
-// Helper function for inserting HTML as the first child of an element
-function insert(targetId, message) {
-    id(targetId).insertAdjacentHTML("afterbegin", message);
+function addMessageToGUI(msgString) {
+    insert("messagebox", msgString);
 }
 
-// Helper function for selecting element by id
-function id(id) {
+function insert(targetId, string) {
+    // TODO: sanitize content before inserting
+    elementById(targetId).insertAdjacentHTML("afterbegin", string);
+}
+
+function elementById(id) {
     return document.getElementById(id);
 }
