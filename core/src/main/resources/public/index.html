@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/stylemainsize.css">
     <script src="js/websocketDemo.js" async></script>
     <script src="js/languages.js" async></script>
-    <script src="js/settings.js" async></script>
+    <!--<script src="js/settings.js" async></script>-->
 </head>
 
 <body>
@@ -15,8 +15,8 @@
     <div id="header">
         <button class="headerbutton" id="logout">Log out</button>
         <!--TODO: en and est buttons to react normally when reducing window size-->
-        <button class="headerbutton" id="en" onclick=changeLanguage("en");>En</button>
-        <button class="headerbutton" id="est" onclick=changeLanguage("et");>Est</button>
+        <button class="headerbutton" id="en" onclick="changeLanguage(en);">En</button>
+        <button class="headerbutton" id="est" onclick="changeLanguage(et);">Est</button>
     </div>
     <div id="container">
         <div id="contacts">
@@ -37,7 +37,7 @@
         <div id="recepient">
             <h3 id="contact">Contact</h3>
         </div>
-        <button id="settingsbutton" onclick=displaySettings()>Settings</button>
+        <button id="settingsbutton" onclick="">Settings</button>
         <!--<div id="thingy"></div>-->
         <!--<div id="settingsbox">-->
             <!--<ul style="list-style-type:none">-->
