@@ -12,8 +12,6 @@ import java.math.BigDecimal;
  */
 @WebSocket
 public class ChatWebSocketHandler {
-    private String lineSeparator = System.getProperty("line.separator");
-
     // ID counter
     private int i = 1;
 
@@ -33,10 +31,10 @@ public class ChatWebSocketHandler {
         BigDecimal msgCountToday = Main.getDb().getSentMessageCountToday(i);
         String lastMessage = String.valueOf(getLastReceivedMessage(i));
 
-        //TODO: next line
-        Main.sendMessage(userSession, "Server: logged in with ID: " + i +
-                "; Messages sent today: " + msgCountToday + ";" +
-                "Logged in with ID: " + i + lastMessage, true);
+        //TODO: do not remove i and ; - it will break down
+        Main.sendMessage(userSession, i + ";Server: logged in with ID: " + i +
+                "  ,Messages sent today: " + msgCountToday + ",  " +
+                "Logged in with ID: " + i + ", " + lastMessage, true);
         i++;
     }
 
@@ -61,7 +59,7 @@ public class ChatWebSocketHandler {
                             (Main.getDb().getPersonByID(msg.getSender()).getFirstName()).append(": ").append(msg.getContent()));
         } catch (RuntimeException e) {
             //TODO: This should not be possible
-            System.err.println("User not found in the database!");
+            System.err.println("User is not present in the database!");
             return new StringBuilder();
         }
 

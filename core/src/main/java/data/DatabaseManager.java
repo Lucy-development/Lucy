@@ -46,7 +46,6 @@ public class DatabaseManager {
         XMLprops.loadFromXML((DatabaseManager.class.getClassLoader().getResourceAsStream("db.xml")));
 
 
-
         // Load driver
         Class.forName("org.postgresql.Driver");
         // Read from XML
@@ -77,33 +76,31 @@ public class DatabaseManager {
     }
 
     public Person getPersonByID(Integer ID) {
-        String query = String.format("SELECT * FROM person_by_id('%s')", ID);
+        String query = "SELECT * FROM person_by_id(?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, ID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                Person person;
+                if (rs.next()) {
+                    person = new Person(
+                            rs.getInt(PERSON_ID_COL),
+                            rs.getString(PERSON_FIRST_NAME_COL),
+                            rs.getString(PERSON_LAST_NAME_COL),
+                            rs.getDate(PERSON_BIRTHDAY_COL),
+                            rs.getString(PERSON_PHONE_COL),
+                            rs.getString(PERSON_EMAIL_COL),
+                            rs.getString(PERSON_META_COL)
+                    );
+                } else throw new RuntimeException();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            Person person;
-            if (rs.next()) {
-                person = new Person(
-                        rs.getInt(PERSON_ID_COL),
-                        rs.getString(PERSON_FIRST_NAME_COL),
-                        rs.getString(PERSON_LAST_NAME_COL),
-                        rs.getDate(PERSON_BIRTHDAY_COL),
-                        rs.getString(PERSON_PHONE_COL),
-                        rs.getString(PERSON_EMAIL_COL),
-                        rs.getString(PERSON_META_COL)
-                );
-            } else throw new RuntimeException();
-
-            if (rs.next()) throw new RuntimeException();
-
-            return person;
+                if (rs.next()) throw new RuntimeException();
+                return person;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
-
     }
 
     /**
@@ -177,8 +174,8 @@ public class DatabaseManager {
      * @param count - N.o messages to fetch
      */
     public List<SentMessage> retrieveMessagesBySender(Integer senderID, Integer count) {
-        String sql = String.format("SELECT * FROM messages_by_sender_id(%s,%s)", senderID, count);
-        return retrieveMessages(sql);
+        String sql = "SELECT * FROM messages_by_sender_id(?,?)";
+        return retrieveMessages(sql, senderID, count);
     }
 
     /**
@@ -187,8 +184,8 @@ public class DatabaseManager {
      * @param count - N.o messages to fetch
      */
     public List<SentMessage> retrieveMessagesBySender(String senderEmail, Integer count) {
-        String sql = String.format("SELECT * FROM messages_by_sender_id(%s,%s)", getPersonByEmail(senderEmail).getID(), count);
-        return retrieveMessages(sql);
+        String sql = "SELECT * FROM messages_by_sender_id(?,?)";
+        return retrieveMessages(sql, getPersonByEmail(senderEmail).getID(), count);
     }
 
 
@@ -198,8 +195,8 @@ public class DatabaseManager {
      * @param count - N.o messages to fetch
      */
     public List<SentMessage> retrieveMessagesByRecipient(Integer recipientID, Integer count) {
-        String sql = String.format("SELECT * FROM messages_by_recipient_id(%s,%s)", recipientID, count);
-        return retrieveMessages(sql);
+        String sql = "SELECT * FROM messages_by_recipient_id(?,?)";
+        return retrieveMessages(sql, recipientID, count);
     }
 
     /**
@@ -208,22 +205,24 @@ public class DatabaseManager {
      * @param count - N.o messages to fetch
      */
     public List<SentMessage> retrieveMessagesByRecipient(String recipientEmail, Integer count) {
-        String sql = String.format("SELECT * FROM messages_by_recipient_id(%s,%s)", getPersonByEmail(recipientEmail).getID(), count);
-        return retrieveMessages(sql);
+        String sql = "SELECT * FROM messages_by_recipient_id(?,?)";
+        return retrieveMessages(sql, getPersonByEmail(recipientEmail).getID(), count);
     }
 
     /**
      * General method for messages retrieval
      */
-    private List<SentMessage> retrieveMessages(String sql) {
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            List<SentMessage> messages = new ArrayList<>();
-
-            while (rs.next()) {
-                messages.add(new SentMessage(rs.getTimestamp(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+    private List<SentMessage> retrieveMessages(String sql, Integer id, Integer count) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            stmt.setInt(2, count);
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<SentMessage> messages = new ArrayList<>();
+                while (rs.next()) {
+                    messages.add(new SentMessage(rs.getTimestamp(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+                }
+                return messages;
             }
-            return messages;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -235,16 +234,17 @@ public class DatabaseManager {
      * Method for retrieving contact id's from the database.
      */
     private List<Integer> getContactFriends(Integer ID) {
-        String sql = String.format("SELECT person_friends(%s)", ID);
+        String sql = "SELECT person_friends(?)";
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            List<Integer> contactFriends = new ArrayList<>();
-            while (rs.next()) {
-                contactFriends.add(rs.getInt(PERSON_FRIENDS_COL));
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, ID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<Integer> contactFriends = new ArrayList<>();
+                while (rs.next()) {
+                    contactFriends.add(rs.getInt(PERSON_FRIENDS_COL));
+                }
+                return contactFriends;
             }
-            return contactFriends;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -279,13 +279,13 @@ public class DatabaseManager {
      * Return sent message count today by SenderId
      */
     public BigDecimal getSentMessageCountToday(Integer senderId) {
-        String query = String.format("SELECT  messages_today_by(%s)", senderId);
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            rs.next();
-            return rs.getBigDecimal("messages_today_by");
-
+        String query = "SELECT messages_today_by(?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, senderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                rs.next();
+                return rs.getBigDecimal("messages_today_by");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -294,27 +294,26 @@ public class DatabaseManager {
 
 
     public Person getPersonByEmail(String email) {
-        String query = String.format("SELECT * FROM person_by_email('%s')", email);
+        String query = "SELECT * FROM person_by_email(?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, email);
+            try (ResultSet rs = stmt.executeQuery()) {
+                Person person;
+                if (rs.next()) {
+                    person = new Person(
+                            rs.getInt(PERSON_ID_COL),
+                            rs.getString(PERSON_FIRST_NAME_COL),
+                            rs.getString(PERSON_LAST_NAME_COL),
+                            rs.getDate(PERSON_BIRTHDAY_COL),
+                            rs.getString(PERSON_PHONE_COL),
+                            email,
+                            rs.getString(PERSON_META_COL)
+                    );
+                } else throw new RuntimeException();
 
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            Person person;
-            if (rs.next()) {
-                person = new Person(
-                        rs.getInt(PERSON_ID_COL),
-                        rs.getString(PERSON_FIRST_NAME_COL),
-                        rs.getString(PERSON_LAST_NAME_COL),
-                        rs.getDate(PERSON_BIRTHDAY_COL),
-                        rs.getString(PERSON_PHONE_COL),
-                        email,
-                        rs.getString(PERSON_META_COL)
-                );
-            } else throw new RuntimeException();
-
-            if (rs.next()) throw new RuntimeException();
-
-            return person;
+                if (rs.next()) throw new RuntimeException();
+                return person;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();

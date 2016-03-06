@@ -25,14 +25,12 @@ public class Person {
         this.phone = phone;
         this.email = email;
         try {
-            //TODO: Error handling. PS! Remove invalid email from database.
             new InternetAddress(email).validate();
         } catch (AddressException e) {
-            System.err.print("Invalid Email!");
+            System.err.println("Invalid Email have been detected in class person!");
         }
         this.meta = meta;
     }
-
 
 
     public Integer getID() {
