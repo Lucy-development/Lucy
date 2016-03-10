@@ -179,6 +179,7 @@ input.active { /*TODO: not working*/
     border-radius: 7px;
     font-family: "Microsoft YaHei Light";
     position: absolute;
-    right: 20%;
+    right: 25%;
     bottom: 9%;
+
 }

@@ -3,15 +3,15 @@
     button.headerbutton{
         font-size: 12px;
     }
-
 }
+
 @media screen and (max-height: 480px){
     button.headerbutton{
         font-size: 12px;
     }
 }
 
-@media screen and (max-width: 1260px){
+@media screen and (max-width: 1490px){
     #en{
         left: 5vmin;
     }
