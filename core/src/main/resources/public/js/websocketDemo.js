@@ -1,4 +1,3 @@
-
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
 
 var connectionOpen = true;
@@ -21,7 +20,7 @@ elementById("message").addEventListener("keypress", function (key) {
 
 function sendHandler() {
     var msgContent = elementById("message").value;
-    var receiver = elementById("searchcontact").value;
+    var receiver = getCurrentlyActiveReceiver();
     if (msgContent != "") {
         sendMessage(msgContent, receiver);
         clearMsgInput();
@@ -68,4 +67,27 @@ function insert(targetId, string) {
 
 function elementById(id) {
     return document.getElementById(id);
+}
+
+function elementByClass(className) {
+    return document.getElementsByClassName(className);
+}
+
+
+/**
+ * Method returns the id of the currently chosen recipient
+ */
+function getCurrentlyActiveReceiver() {
+    if (getReceiverBoxId() !== "") {
+        return getReceiverBoxId();
+    } else {
+        if (elementByClass("activated").length === 1)
+            return elementByClass("activated")[0].getAttribute("id");
+        //TODO: Error handling
+    }
+}
+
+
+function getReceiverBoxId() {
+    return elementById("searchcontact").value;
 }

@@ -3,10 +3,30 @@
  */
 
 
-//TODO: created css classes (li.activated and li.deactivated)
-//TODO: set <ul> id to "list" or change js.
-//TODO: create method that sets receiver id
-//TODO: why do we need setAttribute method? why .classname does not work?
+/**
+ * Fuction takes contactList as a jason object and call function that writes all the contacts in the JSON into the html.
+ *
+ {
+ "connected" : "true",
+ "contacts" : [
+  {"name" : "Mari Maasikas", "lid" : "7m1N80w"},
+  {"name" : "Marge Kaevur", "lid" : "9asdj23M"}
+ ]
+}
+ *
+ */
+function handleContactResponse(json) {
+    var obj = JSON.parse(json);
+    if (obj.connected === "true") {
+        writeContacts(obj.contacts);
+    }
+}
+
+
+//function x() {
+//    handleContactResponse('{"connected": "true","contacts": [  {"name": "Mari Maasikas", "lid": "1"}, {"name": "Marge Kaevur", "lid": "2"}] }');
+//}
+
 
 /**
  * Method inserts html tag into the index.html
@@ -30,12 +50,20 @@ function writeContactHtmlTag(id, contactName) {
     //Finally you must append the new element to an existing element.
 
     //This code finds an existing element:
-    //TODO: CORRECT ELEMENT ID NEEDED (reference from html) - list is the parent name
     var element = document.getElementById('list');
     //This code appends the new element to the existing element:
     element.appendChild(para);
 }
 
+/**
+ *
+ * @param contacts - list of contacts that will be written to the HTML
+ */
+function writeContacts(contacts) {
+    for (var i = 0; i < contacts.length; i++) {
+        writeContactHtmlTag(contacts[i].lid, contacts[i].name);
+    }
+}
 
 /**
  * Method changes chosen contact class
