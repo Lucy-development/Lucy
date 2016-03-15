@@ -11,6 +11,7 @@ function sendAuthRequest(userID, accessToken) {
     // TODO: should also include appID?
     var url = "http://lucy-messaging.herokuapp.com/login";
     var authObj = new Object();
+    authObj.authmethod = "fb";
     authObj.userid = userID;
     authObj.accesstoken = accessToken;
 

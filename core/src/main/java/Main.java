@@ -1,10 +1,11 @@
-import authentication.facebook.FBValidation;
+import authentication.AuthReqParser;
+import authentication.facebook.FBAuthenticator;
 import data.DatabaseManager;
 import data.SentMessage;
+import exceptions.NoAuthMethodException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
-import util.Util;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -42,30 +43,38 @@ public class Main {
         before("/", (req, res) -> res.header("Access-Control-Allow-Origin", "*"));
 
         post("/login", (req, res) -> {
-            // Get userID and FB access token from request body
-            Map<String, String> params = Util.parseFBAuthJSONQuery(req.body());
-            if (!params.containsKey("accesstoken") || !params.containsKey("userid")) {
-                throw new RuntimeException("Invalid query params: " + params);
+            boolean authSuccessful = false;
+            try {
+                String authMethod = AuthReqParser.getAuthMethod(req.body());
+                if (authMethod.equals("fb")) {
+                    // Facebook login
+                    System.err.println("Attempting fb authentication");
+                    authSuccessful = FBAuthenticator.checkFBAuth(req.body());
+                } else {
+                    // Unknown login method
+                    System.err.println("Unknown auth method sent by client");
+                    authSuccessful = false;
+                }
+            } catch (NoAuthMethodException e) {
+                // No login method specified by client
+                System.err.println("No auth method specified by client");
+                authSuccessful = false;
             }
-            String userID = params.get("userid");
-            String accessToken = params.get("accesstoken");
 
-            // Validate that given FB access token matches given userID
-            boolean authSuccessful = FBValidation.checkFBTokenValidity(userID, accessToken);
             if (authSuccessful) {
-                System.out.println("FB authentication successful for userID " + userID);
-                res.status(200); // This should trigger a redirect to / in browser
-                res.redirect("/"); // Fallback if browser does not support AJAX
+                System.err.println("Auth successful");
+                res.status(200); // This should trigger a client-side redirect to / in browser
+                res.redirect("/"); // Fallback if browser does not support AJAX, probably bullshit
                 halt();
                 // TODO: somehow assign userID to session?
             } else {
+                System.err.println("Auth failed");
                 // 403 FORBIDDEN
                 res.status(403);
                 halt(403);
             }
             return null;
         });
-
     }
 
 

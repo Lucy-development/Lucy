@@ -22,8 +22,7 @@ public class Util {
     }
 
     private class FBAuthQuery {
-        String userid;
-        String accesstoken;
+        protected String userid;
+        protected String accesstoken;
     }
-
 }
