@@ -42,6 +42,31 @@ function sendMessage(message, receiver) {
     webSocket.send(receiver + ";" + message);
 }
 
+//TODO: there are two options: message can either be REAL message or System/WebServer data message
+// Need to check it (while sending and while receiving by websocket
+
+/*
+ [17:01:45] Kaspar Papli: Sõnum läks edukalt kohale:
+ {
+ "status" : "success",
+ "errors" : ""
+ }
+ [17:02:02] Kaspar Papli: Sõnum läks edukalt kohale ja kontakte tuleb uuendada:
+ {
+ "status" : "updcontacts",
+ "contacts" : {...} # täpselt sama formaat, mis alguses
+ "errors" : ""
+ }
+ [17:02:36 | Muudetud - 17:03:41] Kaspar Papli: Sõnumi läkitamisel tekkis viga, pani pange:
+ {
+ "status" : "failed",
+ "errors" : [
+ {"errcode" : "9000", "errmsg" : "3mi93Qsoa23d"}
+ ]
+ }
+
+ */
+
 function messageHandler(msg) {
     var messageSting = parseMessage(msg);
     addMessageToGUI(messageSting);
