@@ -15,10 +15,14 @@ public class Authenticator {
 
     /**
      * @param user
-     * @return true if user is not null and is authenticated, false otherwise
+     * @return true if user is authenticated, false otherwise
+     * @throws NullPointerException if user is null
      */
     public Boolean isAuthenticated(User user) {
-        return user != null && authenticatedUsers.contains(user);
+        if (user == null) {
+            throw new NullPointerException("User cannot be 'null'");
+        }
+        return authenticatedUsers.contains(user);
     }
 
     /**
@@ -26,8 +30,12 @@ public class Authenticator {
      *
      * @param user
      * @return true if user has been granted authentication, false otherwise
+     * @throws NullPointerException if user is null
      */
     public Boolean addAuthenticated(User user) {
+        if (user == null) {
+            throw new NullPointerException("User cannot be 'null'");
+        }
         this.authenticatedUsers.add(user);
         return true;
     }
