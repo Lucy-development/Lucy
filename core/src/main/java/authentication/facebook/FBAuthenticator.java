@@ -1,9 +1,10 @@
 package authentication.facebook;
 
+import com.google.gson.Gson;
 import org.apache.http.client.fluent.Request;
-import util.Util;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -17,14 +18,31 @@ public class FBAuthenticator {
      */
     public static Boolean checkFBAuth(String authRequest) {
         // Get userID and FB access token from request body
-        Map<String, String> params = Util.parseFBAuthJSONQuery(authRequest);
-        if (!params.containsKey("accesstoken") || !params.containsKey("userid")) {
+        Map<String, String> params = parseFBAuthQuery(authRequest);
+        if (!params.containsKey("accesstoken") ||
+                !params.containsKey("userid") ||
+                params.get("accesstoken") == null ||
+                params.get("userid") == null) {
+
             System.err.println("Invalid query params: " + params);
             return false;
         }
         String userID = params.get("userid");
         String accessToken = params.get("accesstoken");
-        return FBAuthenticator.checkFBTokenValidity(userID, accessToken);
+        return checkFBTokenValidity(userID, accessToken);
+    }
+
+    public static Map<String, String> parseFBAuthQuery(String query) {
+        Map<String, String> queryParams = new HashMap<>();
+        FBAuthQuery q = new Gson().fromJson(query, FBAuthQuery.class);
+        queryParams.put("userid", q.userid);
+        queryParams.put("accesstoken", q.accesstoken);
+        return queryParams;
+    }
+
+    private class FBAuthQuery {
+        protected String userid;
+        protected String accesstoken;
     }
 
     private static Boolean checkFBTokenValidity(String userID, String userAccessToken) {
