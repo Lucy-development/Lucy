@@ -107,10 +107,9 @@ public class DatabaseManager {
      * Method for inserting messages into database.
      */
     public void insertSentMessageIntoDb(SentMessage sentMessage) {
-        String sql = "INSERT INTO message(timestamp, sender, recipient, content, meta)"
-                + " VALUES (?, ?, ?, ?, ?)";
+        String sql = "{call insert_sent_message(? ,?,?, ?,?)}";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (CallableStatement statement = connection.prepareCall(sql)) {
             connection.setAutoCommit(false);
 
             statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
@@ -118,7 +117,7 @@ public class DatabaseManager {
             statement.setInt(3, sentMessage.getReceiver());
             statement.setString(4, sentMessage.getContent());
             statement.setString(5, sentMessage.getMeta());
-            statement.executeUpdate();
+            statement.execute();
             connection.commit();
             connection.setAutoCommit(true);
         } catch (SQLException e) {
@@ -134,6 +133,12 @@ public class DatabaseManager {
         }
     }
 
+    /*
+    public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, URISyntaxException {
+        DatabaseManager db = new DatabaseManager();
+        db.insertSentMessageIntoDb(new SentMessage(new Timestamp(System.currentTimeMillis()), 1, 2, "Java2", ""));
+    }
+*/
 
     /**
      * Method for inserting person into database.
