@@ -107,7 +107,7 @@ public class DatabaseManager {
      * Method for inserting messages into database.
      */
     public void insertSentMessageIntoDb(SentMessage sentMessage) {
-        String sql = "{call insert_sent_message(? ,?,?, ?,?)}";
+        String sql = "{call insert_sent_message(?,?,?,?,?)}";
 
         try (CallableStatement statement = connection.prepareCall(sql)) {
             connection.setAutoCommit(false);
@@ -133,21 +133,14 @@ public class DatabaseManager {
         }
     }
 
-    /*
-    public static void main(String[] args) throws ClassNotFoundException, IOException, SQLException, URISyntaxException {
-        DatabaseManager db = new DatabaseManager();
-        db.insertSentMessageIntoDb(new SentMessage(new Timestamp(System.currentTimeMillis()), 1, 2, "Java2", ""));
-    }
-*/
 
     /**
      * Method for inserting person into database.
      */
     public void insertPersonIntoDb(Person person) {
-        String sql = "INSERT INTO person(f_name,l_name,b_day,email,phone,meta)"
-                + " VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "{call insert_person(?,?,?,?,?,?)}";
 
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (CallableStatement statement = connection.prepareCall(sql)) {
             connection.setAutoCommit(false);
 
             statement.setString(1, person.getFirstName());
@@ -156,7 +149,7 @@ public class DatabaseManager {
             statement.setString(4, person.getEmail());
             statement.setString(5, person.getPhone());
             statement.setString(6, person.getMeta());
-            statement.executeUpdate();
+            statement.execute();
             connection.commit();
             connection.setAutoCommit(true);
         } catch (SQLException e) {
