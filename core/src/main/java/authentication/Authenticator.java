@@ -6,6 +6,7 @@ import java.util.Set;
 
 
 public class Authenticator {
+    // TODO: users' authentication should expire after some time of inactivity
 
     private Set<User> authenticatedUsers;
 
