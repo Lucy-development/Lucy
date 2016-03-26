@@ -1,7 +1,7 @@
 package communication;
 
 import authentication.User;
-import main.Main;
+import m.Main;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.util.HashMap;

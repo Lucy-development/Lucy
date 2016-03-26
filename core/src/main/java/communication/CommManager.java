@@ -1,7 +1,7 @@
 package communication;
 
 import data.SentMessage;
-import main.Main;
+import m.Main;
 import org.eclipse.jetty.websocket.api.Session;
 import org.json.JSONException;
 import org.json.JSONObject;
