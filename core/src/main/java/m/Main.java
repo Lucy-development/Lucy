@@ -1,4 +1,4 @@
-package m;
+package main;
 
 import authentication.AuthManager;
 import authentication.AuthReqParser;
