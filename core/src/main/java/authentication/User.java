@@ -3,13 +3,14 @@ package authentication;
 
 public class User {
 
-    private Integer lid;
+    private final String lid;
 
-    public User(Integer lid) {
+    public User(String lid) {
         this.lid = lid;
     }
 
-    public Integer getLid() {
+
+    public String getLid() {
         return lid;
     }
 

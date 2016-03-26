@@ -1,101 +1,120 @@
+
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
-
 var connectionOpen = true;
+var sessionAuthenticated = false;
+var myLid = getCookie("myLid");
 
-webSocket.onmessage = function (msg) {
-    messageHandler(msg);
+
+// WS HANDLERS
+webSocket.onopen = function () {
+    insertToMessageBox(composeLogMessage("WebSocket session opened"));
+    insertToMessageBox(composeLogMessage("Attempting to authenticate session..."));
+    sendAuthSessionRequest(getCookie("sessiontoken"));
 };
 
-webSocket.onclose = function () {
+webSocket.onmessage = function (messageEvent) {
+    messageHandler(messageEvent.data);
+};
+
+webSocket.onclose = function (closeEvent) {
     connectionOpen = false;
-    addMessageToGUI("--- Connection closed ---" + "<br />");
+    sessionAuthenticated = false;
+    if (closeEvent.code === 1008) {
+        insertToMessageBox(composeLogMessage("Server killed the session with reason: " + closeEvent.reason));
+    }
+    insertToMessageBox(composeLogMessage("Session died :("));
 };
 
-elementById("send").addEventListener("click", sendHandler);
+
+// EVENT LISTENERS
+elementById("send").addEventListener("click",
+    sendHandler
+);
 elementById("message").addEventListener("keypress", function (key) {
     if (key.keyCode === 13) {
         sendHandler();
     }
 });
 
-function sendHandler() {
-    var msgContent = elementById("message").value;
-    var receiver = getCurrentlyActiveReceiver();
-    if (msgContent != "") {
-        sendMessage(msgContent, receiver);
-        clearMsgInput();
-        if (connectionOpen) {
-            addMessageToGUI(composeMessageString("--", msgContent));
+
+function messageHandler(string) {
+    var serverMessage = JSON.parse(string);
+    var purpose = serverMessage.purpose;
+    var status = serverMessage.status;
+    if (purpose === "msg_sent") {
+        if (status === "success") {
+            // Some message has been successfully sent
+        } else if (status === "fail") {
+            // Some message could not be delivered
+            insertToMessageBox(composeLogMessage("Failed to deliver message"));
         } else {
-            addMessageToGUI("--- Unable to send message: connection is closed ---" + "<br />");
+            throw "Unexpected status: " + status;
+        }
+    } else if (purpose === "msg_received") {
+        // Received message
+        var sender = serverMessage.from;
+        var messageContent = serverMessage.content;
+        insertToMessageBox(composeRegularMessage(lidToContactName(sender), messageContent));
+    } else if (purpose === "auth_resp") {
+        if (status === "success") {
+            sessionAuthenticated = true;
+            insertToMessageBox(composeLogMessage("Session successfully authenticated"));
+            insertToMessageBox(composeLogMessage("Your ID: " + myLid));
+        } else {
+            insertToMessageBox(composeLogMessage("Failed to authenticate session"));
+        }
+    } else {
+        throw "Unexpected purpose for message: " + string;
+    }
+}
+
+function sendHandler() {
+    var msgContent = getMsgInput();
+    var receiver = getCurrentlyActiveReceiver();
+    if (msgContent !== "") {
+        if (connectionOpen) {
+            if (sessionAuthenticated) {
+                sendMessage(msgContent, receiver);
+                clearMsgInput();
+                insertToMessageBox(composeRegularMessage(lidToContactName(myLid), msgContent));
+            } else {
+                insertToMessageBox(composeLogMessage("Unable to send message, WebSocket session is unauthenticated"));
+            }
+        } else {
+            insertToMessageBox(composeLogMessage("Unable to send message, WebSocket connection is closed"));
         }
     }
 }
 
-function clearMsgInput() {
-    elementById("message").value = "";
+
+function sendAuthSessionRequest(sessionKey) {
+    var authRequestObject = {};
+    authRequestObject.purpose = "auth";
+    authRequestObject.content = sessionKey;
+    webSocket.send(JSON.stringify(authRequestObject));
 }
 
 function sendMessage(message, receiver) {
-    // TODO: should use JSON instead of this silly "receiver;message" format
-    // TODO: or should we use XML or something for points?
-    webSocket.send(receiver + ";" + message);
+    var messageObject = {};
+    messageObject.purpose = "msg";
+    messageObject.to = receiver;
+    messageObject.content = message;
+    webSocket.send(JSON.stringify(messageObject));
 }
 
-//TODO: there are two options: message can either be REAL message or System/WebServer data message
-// Need to check it (while sending and while receiving by websocket
-
-/*
- [17:01:45] Kaspar Papli: Sõnum läks edukalt kohale:
- {
- "status" : "success",
- "errors" : ""
- }
- [17:02:02] Kaspar Papli: Sõnum läks edukalt kohale ja kontakte tuleb uuendada:
- {
- "status" : "updcontacts",
- "contacts" : {...} # täpselt sama formaat, mis alguses
- "errors" : ""
- }
- [17:02:36 | Muudetud - 17:03:41] Kaspar Papli: Sõnumi läkitamisel tekkis viga, pani pange:
- {
- "status" : "failed",
- "errors" : [
- {"errcode" : "9000", "errmsg" : "3mi93Qsoa23d"}
- ]
- }
-
+/**
+ * Avoid inventing the wheel? (http://www.w3schools.com/js/js_cookies.asp)
+ * TODO: invent the wheel
  */
-
-function messageHandler(msg) {
-    var messageSting = parseMessage(msg);
-    addMessageToGUI(messageSting);
-}
-
-function parseMessage(msg) {
-    var data = JSON.parse(msg.data);
-    return composeMessageString(data.from, data.msg);
-}
-
-function composeMessageString(receiver, msgString) {
-    return receiver + ": " + msgString + "<br />";
-}
-
-function addMessageToGUI(msgString) {
-    insert("messagebox", msgString);
-}
-
-function insert(targetId, string) {
-    // TODO: sanitize content before inserting
-    elementById(targetId).insertAdjacentHTML("afterbegin", string);
-}
-
-function elementById(id) {
-    return document.getElementById(id);
-}
-
-function elementByClass(className) {
-    return document.getElementsByClassName(className);
+function getCookie(cookieName) {
+    var name = cookieName + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
 }
 
 
@@ -113,6 +132,43 @@ function getCurrentlyActiveReceiver() {
 }
 
 
+function lidToContactName(lid) {
+    // TODO: return corresponding contact name
+    return lid;
+}
+
+function composeRegularMessage(sender, messageContent) {
+    return sender + ": " + messageContent + "</br>";
+}
+
+function composeLogMessage(logMessage) {
+    return "--- " + logMessage + " ---" + "</br>";
+}
+
+function getMsgInput() {
+    return elementById("message").value;
+}
+
+function clearMsgInput() {
+    elementById("message").value = "";
+}
+
 function getReceiverBoxId() {
     return elementById("searchcontact").value;
+}
+
+function insertToMessageBox(string) {
+    insertBeforeEnd("messagebox", string);
+}
+
+function insertBeforeEnd(targetId, string) {
+    elementById(targetId).insertAdjacentHTML("beforeend", string);
+}
+
+function elementById(id) {
+    return document.getElementById(id);
+}
+
+function elementByClass(className) {
+    return document.getElementsByClassName(className);
 }

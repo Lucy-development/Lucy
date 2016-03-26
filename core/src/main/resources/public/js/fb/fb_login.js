@@ -1,19 +1,21 @@
 
+
 function redirectToChat() {
-    window.location = "http://lucy-messaging.herokuapp.com";
+    window.location = "http://lucy-messaging.herokuapp.com"; //"http://localhost:4567/";
 }
 
 function redirectToLogin() {
-    window.location = "http://lucy-messaging.herokuapp.com/login.html";
+    window.location = "http://lucy-messaging.herokuapp.com/login.html"; //"http://localhost:4567/login.html";
 }
 
 function sendAuthRequest(userID, accessToken) {
     // TODO: should also include appID?
-    var url = "http://lucy-messaging.herokuapp.com/login";
-    var authObj = new Object();
+    var url = "http://lucy-messaging.herokuapp.com/login"; //"http://localhost:4567/login";
+    var authObj = {};
     authObj.authmethod = "fb";
     authObj.userid = userID;
     authObj.accesstoken = accessToken;
+    document.cookie = "myLid=" + userID;
 
     req = new XMLHttpRequest();
     req.open("POST", url, true);
@@ -37,7 +39,7 @@ function sendAuthRequest(userID, accessToken) {
 }
 
 function statusChangeHandler(response) {
-    console.log("FB API returned response: " + response.status)
+    console.log("FB API returned response: " + response.status);
     if (response.status === 'connected') {
         sendAuthRequest(response.authResponse.userID, response.authResponse.accessToken);
     }
