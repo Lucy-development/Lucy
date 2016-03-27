@@ -82,7 +82,7 @@
                 <version>0.4.4</version>
                 <configuration>
                     <jdkVersion>1.8</jdkVersion>
-                    <appName>lucy123</appName>
+                    <appName>lucy-messaging</appName>
                     <processTypes>
                         <!-- Tell Heroku how to launch your application -->
                         <web>java -jar target/lucy-0.1-jar-with-dependencies.jar</web>
