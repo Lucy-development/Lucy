@@ -8,6 +8,37 @@
     <link rel="stylesheet" href="css/map.css">
 </head>
 <body>
+<div id="navigation-bar">
+    <ul id="navigation-list">
+        <li>
+            <a id="home" href="/lucy/public/index.html">Home</a>
+        </li>
+        <li>
+            <a id="map" href="/lucy/public/map.html">Map</a>
+        </li>
+    </ul>
+    <div class="dropdown">
+        <label for="menu-button">Menu Button</label>
+        <button id="menu-button" class="dropbutton">Menu</button>
+        <div class="dropdown-content">
+            <label for="en">English</label>
+            <button class="menu-item" id="en" onclick="changeLanguage('en');">English</button>
+            <label for="et">Estonian</label>
+            <button class="menu-item" id="et" onclick="changeLanguage('et');">Estonian</button>
+        </div>
+    </div>
+    <div id="small-screen-menu">
+        <ul id="small-screen-list">
+            <li><label for="smallscreenEn">English</label>
+                <button id="smallscreenEn" onclick="changeLanguage('en');">English</button>
+            </li>
+            <li><label for="smallscreenEt">Estonian</label>
+                <button id="smallscreenEt" onclick="changeLanguage('et');">Estonian</button>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div id="googleMap" class="google_map"></div>
 </body>
 </html>

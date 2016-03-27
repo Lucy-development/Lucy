@@ -58,3 +58,28 @@ function getLocation() {
 }
 
 google.maps.event.addDomListener(window, 'load', getLocation());
+
+
+function changeLanguage(lan){
+
+    if (lan == "et"){
+        document.getElementById("menu-button").textContent = "Valikud";
+        document.getElementById("en").textContent = "Inglise";
+        document.getElementById("et").textContent = "Eesti";
+        document.getElementById("smallscreenEn").textContent = "Inglise";
+        document.getElementById("smallscreenEt").textContent = "Eesti";
+        document.getElementById("home").textContent = "Kodu";
+        document.getElementById("map").textContent = "Kaart";
+        document.documentElement.lang = "et";
+    }
+    else{
+        document.getElementById("menu-button").textContent = "Menu";
+        document.getElementById("en").textContent = "English";
+        document.getElementById("et").textContent = "Estonian";
+        document.getElementById("smallscreenEn").textContent = "English";
+        document.getElementById("smallscreenEt").textContent = "Estonian";
+        document.getElementById("home").textContent = "Home";
+        document.getElementById("map").textContent = "Map";
+        document.documentElement.lang = "en";
+    }
+}

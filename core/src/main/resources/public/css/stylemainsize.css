@@ -1,18 +1,93 @@
+@media screen and (max-width: 700px) {
+    #send {
+        font-size: 0.7em;
+        width: 49px;
+    }
 
-@media screen and (max-width: 480px){
-    button.headerbutton{
-        font-size: 12px;
+    #searchcontact {
+        width: 130px;
+    }
+
+    #messagebox {
+        left: 130px;
+        right: 0;
+        width: calc(100vw - 130px);
+    }
+
+    #message {
+        left: 0;
+    }
+
+    #contacts {
+        width: 130px;
+    }
+
+    .dropdown-content {
+        width: 12vh;
     }
 }
 
-@media screen and (max-height: 480px){
-    button.headerbutton{
-        font-size: 12px;
+@media screen and (max-height: 600px) {
+    #send {
+        height: 45px;
+    }
+
+    .dropdown-content {
+        width: 160%;
+        right: 2px;
+    }
+
+    .title-bar {
+        height: 40px;
+    }
+
+    #menu-button {
+        top: 5vh;
+    }
+
+    #searchcontact {
+        top: 40px;
+        margin-top: 0;
+        margin-bottom: 0;
+        height: 38px;
+    }
+
+    #messagebox {
+        height: calc(100vh - 85px);
+        top: 40px;
+    }
+
+    #contacts {
+        top: 78px;
+        margin-top: 0;
+        height: calc(100vh - 123px);
+    }
+
+    #message {
+        height: 45px;
+    }
+
+    #container {
+        top: 40px;
+        height: calc(100vh - 85px);
     }
 }
 
-@media screen and (max-width: 1490px){
-    #en{
-        left: 5vmin;
+@media screen and (max-height: 150px) {
+    .dropdown-content {
+        padding: 0.5em;
+        width: 200%;
     }
 }
+
+@media screen and (max-height: 120px) {
+    #messagebox, #message, #contacts, #searchcontact, #send, .dropdown {
+        display: none;
+    }
+
+    #small-screen-menu {
+        display: block;
+    }
+
+}
+
