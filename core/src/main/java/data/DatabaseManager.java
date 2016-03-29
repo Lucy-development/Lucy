@@ -1,19 +1,13 @@
 package data;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * Created by Priit Paluoja on 24.02.2016.
- */
-
 //TODO Add exception handling
-// TODO: Remove duplicate code
 public class DatabaseManager {
 
     private final String PERSON_ID_COL = "id";
@@ -23,28 +17,14 @@ public class DatabaseManager {
     private final String PERSON_EMAIL_COL = "email";
     private final String PERSON_PHONE_COL = "phone";
     private final String PERSON_META_COL = "meta";
-    private final String MESSAGE_ID_COL = "id";
-    private final String MESSAGE_TIMESTAMP_COL = "timestamp";
-    private final String MESSAGE_SENDER_COL = "sender";
-    private final String MESSAGE_RECEIVER_COL = "recipient";
-    private final String MESSAGE_CONTENT_COL = "content";
-    private final String MESSAGE_META_COL = "meta";
-    private final String FILE_ID_COL = "id";
-    private final String FILE_TIMESTAMP_COL = "timestamp";
-    private final String FILE_SENDER_COL = "sender";
-    private final String FILE_RECEIVER_COL = "recipient";
-    private final String FILE_FILE_COL = "file";
-    private final String FILE_META_COL = "meta";
     private final String PERSON_FRIENDS_COL = "person_friends";
     private Connection connection;
-
 
     public DatabaseManager() throws ClassNotFoundException, URISyntaxException, IOException, SQLException {
         Properties XMLprops = new Properties();
 
         // Load XML file
         XMLprops.loadFromXML((DatabaseManager.class.getClassLoader().getResourceAsStream("db.xml")));
-
 
         // Load driver
         Class.forName("org.postgresql.Driver");
@@ -62,6 +42,7 @@ public class DatabaseManager {
                 "&password=" + pswd +
                 "&ssl=" + ssl + "&sslfactory=org.postgresql.ssl.NonValidatingFactory";
 
+        System.out.println(url);
         // Create connection properties
         Properties connectionProps = new Properties();
         connectionProps.setProperty("user", user);
@@ -75,15 +56,20 @@ public class DatabaseManager {
         if (connection != null) connection.close();
     }
 
-    public Person getPersonByID(Integer ID) {
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public Person getPersonByID(String ID) {
+        //language=PostgreSQL
         String query = "SELECT * FROM person_by_id(?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, ID);
+            stmt.setString(1, ID);
             try (ResultSet rs = stmt.executeQuery()) {
                 Person person;
                 if (rs.next()) {
                     person = new Person(
-                            rs.getInt(PERSON_ID_COL),
+                            rs.getString(PERSON_ID_COL),
                             rs.getString(PERSON_FIRST_NAME_COL),
                             rs.getString(PERSON_LAST_NAME_COL),
                             rs.getDate(PERSON_BIRTHDAY_COL),
@@ -113,22 +99,15 @@ public class DatabaseManager {
             connection.setAutoCommit(false);
 
             statement.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
-            statement.setInt(2, sentMessage.getSender());
-            statement.setInt(3, sentMessage.getReceiver());
+            statement.setString(2, sentMessage.getSender());
+            statement.setString(3, sentMessage.getReceiver());
             statement.setString(4, sentMessage.getContent());
             statement.setString(5, sentMessage.getMeta());
             statement.execute();
             connection.commit();
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    System.err.print("Transaction is being rolled back");
-                    connection.rollback();
-                } catch (SQLException excep) {
-                    throw new RuntimeException("Rollback has failed!");
-                }
-            }
+            cleanUpAfterException();
             e.printStackTrace();
         }
     }
@@ -138,29 +117,45 @@ public class DatabaseManager {
      * Method for inserting person into database.
      */
     public void insertPersonIntoDb(Person person) {
-        String sql = "{call insert_person(?,?,?,?,?,?)}";
+        String sql = "{call insert_person(?,?,?,?,?,?,?)}";
 
         try (CallableStatement statement = connection.prepareCall(sql)) {
             connection.setAutoCommit(false);
 
-            statement.setString(1, person.getFirstName());
-            statement.setString(2, person.getLastName());
-            statement.setDate(3, person.getBirthday());
-            statement.setString(4, person.getEmail());
-            statement.setString(5, person.getPhone());
-            statement.setString(6, person.getMeta());
+            statement.setString(1, person.getID());
+            statement.setString(2, person.getFirstName());
+            statement.setString(3, person.getLastName());
+            statement.setDate(4, person.getBirthday());
+            statement.setString(5, person.getEmail());
+            statement.setString(6, person.getPhone());
+            statement.setString(7, person.getMeta());
             statement.execute();
             connection.commit();
             connection.setAutoCommit(true);
         } catch (SQLException e) {
-            if (connection != null) {
-                try {
-                    System.err.print("Transaction is being rolled back");
-                    connection.rollback();
-                } catch (SQLException excep) {
-                    throw new RuntimeException("Rollback has failed!");
-                }
-            }
+            cleanUpAfterException();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Method for adding friends
+     *
+     * @param personId - the one who will get a new friend
+     */
+    public void insertFriendIntoDb(String personId, String friendId) {
+        String sql = "{call insert_friend(?,?)}";
+
+        try (CallableStatement statement = connection.prepareCall(sql)) {
+            connection.setAutoCommit(false);
+
+            statement.setString(1, personId);
+            statement.setString(2, friendId);
+            statement.execute();
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            cleanUpAfterException();
             e.printStackTrace();
         }
     }
@@ -171,19 +166,10 @@ public class DatabaseManager {
      *
      * @param count - N.o messages to fetch
      */
-    public List<SentMessage> retrieveMessagesBySender(Integer senderID, Integer count) {
+    public List<SentMessage> retrieveMessagesBySender(String senderID, Integer count) {
+        //language=PostgreSQL
         String sql = "SELECT * FROM messages_by_sender_id(?,?)";
         return retrieveMessages(sql, senderID, count);
-    }
-
-    /**
-     * method for retrieving messages by sender email
-     *
-     * @param count - N.o messages to fetch
-     */
-    public List<SentMessage> retrieveMessagesBySender(String senderEmail, Integer count) {
-        String sql = "SELECT * FROM messages_by_sender_id(?,?)";
-        return retrieveMessages(sql, getPersonByEmail(senderEmail).getID(), count);
     }
 
 
@@ -192,32 +178,24 @@ public class DatabaseManager {
      *
      * @param count - N.o messages to fetch
      */
-    public List<SentMessage> retrieveMessagesByRecipient(Integer recipientID, Integer count) {
+    public List<SentMessage> retrieveMessagesByRecipient(String recipientID, Integer count) {
+        //language=PostgreSQL
         String sql = "SELECT * FROM messages_by_recipient_id(?,?)";
         return retrieveMessages(sql, recipientID, count);
     }
 
-    /**
-     * method for retrieving messages by recipient email
-     *
-     * @param count - N.o messages to fetch
-     */
-    public List<SentMessage> retrieveMessagesByRecipient(String recipientEmail, Integer count) {
-        String sql = "SELECT * FROM messages_by_recipient_id(?,?)";
-        return retrieveMessages(sql, getPersonByEmail(recipientEmail).getID(), count);
-    }
 
     /**
      * General method for messages retrieval
      */
-    private List<SentMessage> retrieveMessages(String sql, Integer id, Integer count) {
+    private List<SentMessage> retrieveMessages(String sql, String id, Integer count) {
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setString(1, id);
             stmt.setInt(2, count);
             try (ResultSet rs = stmt.executeQuery()) {
                 List<SentMessage> messages = new ArrayList<>();
                 while (rs.next()) {
-                    messages.add(new SentMessage(rs.getTimestamp(1), rs.getInt(2), rs.getInt(3), rs.getString(4)));
+                    messages.add(new SentMessage(rs.getTimestamp(1), rs.getString(2), rs.getString(3), rs.getString(4)));
                 }
                 return messages;
             }
@@ -231,15 +209,15 @@ public class DatabaseManager {
     /**
      * Method for retrieving contact id's from the database.
      */
-    private List<Integer> getContactFriends(Integer ID) {
+    private List<String> getContactFriends(String ID) {
         String sql = "SELECT person_friends(?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, ID);
+            stmt.setString(1, ID);
             try (ResultSet rs = stmt.executeQuery()) {
-                List<Integer> contactFriends = new ArrayList<>();
+                List<String> contactFriends = new ArrayList<>();
                 while (rs.next()) {
-                    contactFriends.add(rs.getInt(PERSON_FRIENDS_COL));
+                    contactFriends.add(rs.getString(PERSON_FRIENDS_COL));
                 }
                 return contactFriends;
             }
@@ -254,40 +232,10 @@ public class DatabaseManager {
      * @param ID - The ID of the person which contact we want to retrieve
      * @return List of friends
      */
-    public List<Person> getFriends(Integer ID) {
+    public List<Person> getFriends(String ID) {
         List<Person> friends = new ArrayList<>();
         getContactFriends(ID).forEach(id -> friends.add(getPersonByID(id)));
         return friends;
-    }
-
-    /**
-     * @param email - The email of the person which contact we want to retrieve
-     * @return List of friends
-     */
-    public List<Person> getFriends(String email) {
-        return getFriends(getPersonByEmail(email).getID());
-    }
-
-
-    // TODO: method to files
-
-    // TODO: figure out how to use messages_today_by(int)
-
-    /**
-     * Return sent message count today by SenderId
-     */
-    public BigDecimal getSentMessageCountToday(Integer senderId) {
-        String query = "SELECT messages_today_by(?)";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, senderId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                rs.next();
-                return rs.getBigDecimal("messages_today_by");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 
@@ -299,7 +247,7 @@ public class DatabaseManager {
                 Person person;
                 if (rs.next()) {
                     person = new Person(
-                            rs.getInt(PERSON_ID_COL),
+                            rs.getString(PERSON_ID_COL),
                             rs.getString(PERSON_FIRST_NAME_COL),
                             rs.getString(PERSON_LAST_NAME_COL),
                             rs.getDate(PERSON_BIRTHDAY_COL),
@@ -319,7 +267,20 @@ public class DatabaseManager {
         }
     }
 
+
+    /**
+     * Used in methods that try to insert data into the db
+     * (insertPersonIntoDb and insertSentMessageIntoDb)
+     */
+    private void cleanUpAfterException() {
+        if (connection != null) {
+            try {
+                System.err.print("Transaction is being rolled back");
+                connection.rollback();
+            } catch (SQLException excep) {
+                throw new RuntimeException("Rollback has failed!");
+            }
+        }
+    }
+
 }
-
-
-

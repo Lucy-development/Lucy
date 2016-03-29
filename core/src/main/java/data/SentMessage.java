@@ -9,27 +9,18 @@ import java.sql.Timestamp;
 public class SentMessage implements Sendable {
     private Integer id = -1;
     private Timestamp time;
-    private Integer sender;
-    private Integer receiver;
+    private String sender;
+    private String receiver;
     private String meta;
     private String content;
 
-    public SentMessage(Timestamp time, Integer sender, Integer receiver, String meta, String content) {
-        this.time = time;
-        this.sender = sender;
-        this.receiver = receiver;
-        this.meta = meta;
-        this.content = content;
-    }
 
-
-    public SentMessage(Timestamp time, Integer sender, Integer receiver, String content) {
+    public SentMessage(Timestamp time, String sender, String receiver, String content) {
         this.time = time;
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
     }
-
 
 
     @Override
@@ -44,12 +35,12 @@ public class SentMessage implements Sendable {
     }
 
     @Override
-    public Integer getSender() {
+    public String getSender() {
         return sender;
     }
 
     @Override
-    public Integer getReceiver() {
+    public String getReceiver() {
         return receiver;
     }
 
@@ -60,6 +51,22 @@ public class SentMessage implements Sendable {
 
     public String getContent() {
         return content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SentMessage that = (SentMessage) o;
+
+        return id != null ? id.equals(that.id) : that.id == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

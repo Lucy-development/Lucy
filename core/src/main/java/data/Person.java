@@ -9,7 +9,7 @@ import java.sql.Date;
  */
 public class Person {
 
-    private Integer ID;
+    private String ID;
     private String firstName;
     private String lastName;
     private Date birthday;
@@ -17,7 +17,7 @@ public class Person {
     private String phone;
     private String meta;
 
-    public Person(Integer ID, String firstName, String lastName, Date birthday, String phone, String email, String meta) {
+    public Person(String ID, String firstName, String lastName, Date birthday, String phone, String email, String meta) {
         this.ID = ID;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -33,11 +33,11 @@ public class Person {
     }
 
 
-    public Integer getID() {
+    public String getID() {
         return ID;
     }
 
-    public void setID(Integer ID) {
+    public void setID(String ID) {
         this.ID = ID;
     }
 
@@ -63,6 +63,22 @@ public class Person {
 
     public String getMeta() {
         return meta;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        return ID != null ? ID.equals(person.ID) : person.ID == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return ID != null ? ID.hashCode() : 0;
     }
 
     @Override

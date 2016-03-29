@@ -23,8 +23,8 @@ public class CommManager {
             Main.dbManager.insertSentMessageIntoDb(
                     new SentMessage(
                             new Timestamp(System.currentTimeMillis()),
-                            Integer.parseInt(senderLid),
-                            Integer.parseInt(receiverLid),
+                            senderLid,
+                            receiverLid,
                             message)
             );
         }
