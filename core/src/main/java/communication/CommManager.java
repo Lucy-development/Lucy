@@ -21,11 +21,11 @@ public class CommManager {
         // Write msg to database
         if (!onConnect) {
             Main.dbManager.insertSentMessageIntoDb(
-                    new SentMessage(
+                    new SentMessage(String.valueOf(System.nanoTime()),
                             new Timestamp(System.currentTimeMillis()),
                             senderLid,
                             receiverLid,
-                            message)
+                            message, null, null, null)
             );
         }
 

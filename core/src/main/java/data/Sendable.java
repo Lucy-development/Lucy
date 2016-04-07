@@ -7,7 +7,7 @@ import java.sql.Timestamp;
  */
 public interface Sendable {
 
-    Integer getID();
+    String getID();
 
     Timestamp getTime();
 
