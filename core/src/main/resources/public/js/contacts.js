@@ -22,23 +22,22 @@ function handleContactResponse(json) {
     }
 }
 
-
-//function x() {
-//    handleContactResponse('{"connected": "true","contacts": [  {"name": "Mari Maasikas", "lid": "1"}, {"name": "Marge Kaevur", "lid": "2"}] }');
-//}
+/*
+function x() {
+    handleContactResponse('{"connected": "true","contacts": [  {"name": "Mari Maasikas", "lid": "DEDEW"}, {"name": "3434", "lid": "624263748"}] }');
+}*/
 
 
 /**
  * Method inserts html tag into the index.html
  */
 function writeContactHtmlTag(id, contactName) {
-
     //This code creates a new <li> element:
     var para = document.createElement('li');
     //Set contact id for the element
     para.id = id;
 
-    para.setAttribute("onclick", "changeSelectedContactClass(" + id + ");");
+    para.setAttribute("onclick", "changeSelectedContactClass(" + "'" + id + "'" + ");");
     para.className = 'deactivated';
 
     //To add text to the <el> element, you must create a text node first. This code creates a text node:
@@ -74,5 +73,12 @@ function changeSelectedContactClass(id) {
     for (index = 0, len = activated.length; index < len; ++index) {
         activated[index].setAttribute('class', 'deactivated');
     }
-    document.getElementById(id).setAttribute('class', 'activated');
+
+    var el = document.getElementById(String(id));
+    console.log(id);
+
+    // Check that elements exists before editing
+    if (el) {
+        el.setAttribute('class', 'activated');
+    }
 }
