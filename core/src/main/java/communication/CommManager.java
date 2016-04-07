@@ -19,7 +19,7 @@ public class CommManager {
                                       String senderLname,
                                       String receiverLid,
                                       Session receiverSession,
-                                      String message)
+                                      String message, String longitude, String latitude, String location)
             throws JSONException, IOException {
 
         // Write msg to database
@@ -28,7 +28,7 @@ public class CommManager {
                         new Timestamp(System.currentTimeMillis()),
                         senderLid,
                         receiverLid,
-                        message, null, null, null)
+                        message, longitude, latitude, location)
         );
 
         JSONObject messageObject = new JSONObject();
@@ -38,6 +38,9 @@ public class CommManager {
         messageObject.put("sender_fname", senderFname);
         messageObject.put("sender_lname", senderLname);
         messageObject.put("content", message);
+        messageObject.put("longitude", longitude);
+        messageObject.put("latitude", latitude);
+        messageObject.put("location", location);
         return send(messageObject, receiverSession);
     }
 

@@ -12,6 +12,9 @@ public class ClientMessageParser {
         public String purpose;
         public String to;
         public String content;
+        public String latitude;
+        public String longitude;
+        public String location;
 
         @Override
         public String toString() {
@@ -19,6 +22,9 @@ public class ClientMessageParser {
                     "purpose='" + purpose + '\'' +
                     ", to='" + to + '\'' +
                     ", content='" + content + '\'' +
+                    ", latitude='" + latitude + '\'' +
+                    ", longitude='" + longitude + '\'' +
+                    ", location='" + location + '\'' +
                     '}';
         }
     }

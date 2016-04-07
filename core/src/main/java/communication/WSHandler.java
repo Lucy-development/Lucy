@@ -45,7 +45,7 @@ public class WSHandler {
                                 sender.getLastName(),
                                 sessionManager.userBySession(receiverSession).getLid(),
                                 receiverSession,
-                                message.content);
+                                message.content, message.longitude, message.latitude, message.location);
                         if (messageSent) {
                             CommManager.sendResponse(ServerResponse.messageDelivered, senderSession);
                         } else {

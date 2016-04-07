@@ -162,12 +162,44 @@ function sendAuthSessionRequest(sessionKey) {
     webSocket.send(JSON.stringify(authRequestObject));
 }
 
+
 function sendMessage(message, receiver) {
     var messageObject = {};
     messageObject.purpose = "msg";
     messageObject.to = receiver;
     messageObject.content = message;
-    webSocket.send(JSON.stringify(messageObject));
+
+    //TODO: we are dependent of Google
+    // IMPORTANT: the following is async and uses callbacks! Edit with caution!
+    // Insert geolocation data
+    // Check if browser supports geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            //First function is success function
+            function (position) {
+                //Get the latitude and the longitude;
+                messageObject.latitude = position.coords.latitude;
+                messageObject.longitude = position.coords.longitude;
+                //Google service for reverse geocoding: we can get address by coordinates. Note, it is asyinc
+
+                var geocoder = new google.maps.Geocoder();
+                var latlng = new google.maps.LatLng(messageObject.latitude, messageObject.longitude);
+                geocoder.geocode({'latLng': latlng}, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        // Use 0 for more precision
+                        if (results[1]) messageObject.location = results[1].formatted_address;
+                    }
+                    webSocket.send(JSON.stringify(messageObject));
+                });
+            },
+            // Second function is for case where geolocation fails
+            function () {
+                webSocket.send(JSON.stringify(messageObject));
+            });
+    } else {
+        // When browser does not support geolocating
+        webSocket.send(JSON.stringify(messageObject));
+    }
 }
 
 /**
