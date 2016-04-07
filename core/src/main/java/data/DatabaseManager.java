@@ -93,7 +93,7 @@ public class DatabaseManager {
      * Method for inserting messages into database.
      */
     public void insertSentMessageIntoDb(SentMessage sentMessage) {
-        String sql = "{call insert_sent_message(?,?,?,?,?,?)}";
+        String sql = "{call insert_sent_message(?,?,?,?,?,?,?,?,?)}";
 
         try (CallableStatement statement = connection.prepareCall(sql)) {
             connection.setAutoCommit(false);
@@ -104,6 +104,9 @@ public class DatabaseManager {
             statement.setString(4, sentMessage.getReceiver());
             statement.setString(5, sentMessage.getContent());
             statement.setString(6, sentMessage.getMeta());
+            statement.setString(7, sentMessage.getLongitude());
+            statement.setString(8, sentMessage.getLatitude());
+            statement.setString(9, sentMessage.getLocation());
             statement.execute();
             connection.commit();
             connection.setAutoCommit(true);
@@ -196,7 +199,7 @@ public class DatabaseManager {
             try (ResultSet rs = stmt.executeQuery()) {
                 List<SentMessage> messages = new ArrayList<>();
                 while (rs.next()) {
-                    messages.add(new SentMessage(rs.getString(1), rs.getTimestamp(2), rs.getString(3), rs.getString(4), rs.getString(5),rs.getString(6),rs.getString(7),rs.getString(8)));
+                    messages.add(new SentMessage(rs.getString(1), rs.getTimestamp(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7), rs.getString(8)));
                 }
                 return messages;
             }
