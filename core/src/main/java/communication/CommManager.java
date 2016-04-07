@@ -1,38 +1,42 @@
 package communication;
 
 import Main.Main;
+import data.Person;
 import data.SentMessage;
 import org.eclipse.jetty.websocket.api.Session;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class CommManager {
 
     public static boolean sendMessage(String senderLid,
+                                      String senderFname,
+                                      String senderLname,
                                       String receiverLid,
                                       Session receiverSession,
-                                      String message,
-                                      boolean onConnect)
+                                      String message)
             throws JSONException, IOException {
 
         // Write msg to database
-        if (!onConnect) {
-            Main.dbManager.insertSentMessageIntoDb(
-                    new SentMessage(
-                            new Timestamp(System.currentTimeMillis()),
-                            senderLid,
-                            receiverLid,
-                            message)
-            );
-        }
+        Main.dbManager.insertSentMessageIntoDb(
+                new SentMessage(String.valueOf(System.nanoTime()),
+                        new Timestamp(System.currentTimeMillis()),
+                        senderLid,
+                        receiverLid,
+                        message, null, null, null)
+        );
 
         JSONObject messageObject = new JSONObject();
         messageObject.put("purpose", "msg_received");
         messageObject.put("status", "success");
         messageObject.put("from", senderLid);
+        messageObject.put("sender_fname", senderFname);
+        messageObject.put("sender_lname", senderLname);
         messageObject.put("content", message);
         return send(messageObject, receiverSession);
     }
@@ -91,4 +95,22 @@ public class CommManager {
     }
 
 
+    public static boolean sendContacts(String lid, Session session) throws JSONException, IOException {
+        JSONObject resp = new JSONObject();
+        resp.put("purpose", "init_contacts");
+        resp.put("status", "success");
+        JSONArray jsonContactArray = new JSONArray();
+
+        List<Person> contacts = Main.dbManager.getFriends(lid);
+        for (Person contact : contacts) {
+            JSONObject jsonContact = new JSONObject();
+            jsonContact.put("fname", contact.getFirstName());
+            jsonContact.put("lname", contact.getLastName());
+            jsonContact.put("lid", contact.getID());
+            jsonContactArray.put(jsonContact);
+        }
+
+        resp.put("contacts", jsonContactArray);
+        return send(resp, session);
+    }
 }

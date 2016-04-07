@@ -1,4 +1,3 @@
-
 var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port + "/chat/");
 var connectionOpen = true;
 var sessionAuthenticated = false;
@@ -63,6 +62,14 @@ function messageHandler(string) {
         } else {
             insertToMessageBox(composeLogMessage("Failed to authenticate session"));
         }
+    } else if (purpose === "init_contacts") {
+        if (status === "success") {
+            handleContactResponse(serverMessage);
+        } else {
+            insertToMessageBox(composeLogMessage("Failed to show contacts"));
+            throw "Received init_contacts response with status: " + status;
+        }
+
     } else {
         throw "Unexpected purpose for message: " + string;
     }
@@ -83,6 +90,67 @@ function sendHandler() {
         } else {
             insertToMessageBox(composeLogMessage("Unable to send message, WebSocket connection is closed"));
         }
+    }
+}
+
+function handleContactResponse(jsonObj) {
+    writeContacts(jsonObj.contacts);
+}
+
+/**
+ * Method inserts html tag into the index.html
+ */
+function writeContactHtmlTag(id, contactName) {
+    //This code creates a new <li> element:
+    var para = document.createElement('li');
+    //Set contact id for the element
+    para.id = id;
+
+    para.setAttribute("onclick", "changeSelectedContactClass(" + "'" + id + "'" + ");");
+
+    para.className = 'deactivated';
+
+    //To add text to the <el> element, you must create a text node first. This code creates a text node:
+    var node = document.createTextNode(contactName);
+
+    //Then you must append the text node to the <ul> element:
+    para.appendChild(node);
+
+    //Finally you must append the new element to an existing element.
+
+    //This code finds an existing element:
+    var element = document.getElementById('list');
+    //This code appends the new element to the existing element:
+    element.appendChild(para);
+}
+
+
+/**
+ *
+ * @param contacts - list of contacts that will be written to the HTML
+ */
+function writeContacts(contacts) {
+    for (var i = 0; i < contacts.length; i++) {
+        writeContactHtmlTag(contacts[i].lid, contacts[i].fname + " " + contacts[i].lname);
+    }
+}
+
+/**
+ * Method changes chosen contact class
+ */
+function changeSelectedContactClass(id) {
+    var activated = document.getElementsByClassName('activated');
+    var index, len;
+    for (index = 0, len = activated.length; index < len; ++index) {
+        activated[index].setAttribute('class', 'deactivated');
+    }
+
+    var el = document.getElementById(String(id));
+    console.log(id);
+
+    // Check that elements exists before editing
+    if (el) {
+        el.setAttribute('class', 'activated');
     }
 }
 
