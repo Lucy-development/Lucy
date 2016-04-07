@@ -17,7 +17,7 @@ function changeLanguage(lan){
         document.getElementById("contacts").title = "Kontaktid ilmuvad siia";
         document.getElementById("map-link").title = "Teid jälgitakse!";
         document.getElementById("smallscreenMap").title = "Teid jälgitakse!";
-        document.getElementById("home").textContent = "Kodu";
+        document.getElementById("chat").textContent = "Kodu";
         document.getElementById("map").textContent = "Kaart";
         document.documentElement.lang = "et";
     }
@@ -37,7 +37,7 @@ function changeLanguage(lan){
         document.getElementById("contacts").title = "Contacts will appear here";
         document.getElementById("map-link").title = "You are being watched!";
         document.getElementById("smallscreenMap").title = "You are being watched!";
-        document.getElementById("home").textContent = "Home";
+        document.getElementById("chat").textContent = "Home";
         document.getElementById("map").textContent = "Map";
         document.documentElement.lang = "en";
     }
