@@ -7,25 +7,31 @@ import java.sql.Timestamp;
  * Created on 25/02/2016.
  */
 public class SentMessage implements Sendable {
-    private Integer id = -1;
+    private final String latitude;
+    private final String longitude;
+    private String id;
     private Timestamp time;
     private String sender;
     private String receiver;
     private String meta;
     private String content;
+    private String location;
 
 
-    public SentMessage(Timestamp time, String sender, String receiver, String content) {
+    public SentMessage(String id, Timestamp time, String sender, String receiver, String content, String longitude, String latitude, String location) {
+        this.id = id;
         this.time = time;
         this.sender = sender;
         this.receiver = receiver;
         this.content = content;
+        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
     }
 
 
     @Override
-    public Integer getID() {
-        if (id == -1) throw new RuntimeException("ID not assigned!");
+    public String getID() {
         return id;
     }
 
@@ -51,6 +57,22 @@ public class SentMessage implements Sendable {
 
     public String getContent() {
         return content;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     @Override
