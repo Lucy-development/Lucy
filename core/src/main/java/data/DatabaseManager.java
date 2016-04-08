@@ -118,6 +118,25 @@ public class DatabaseManager {
 
 
     /**
+     * Method for deleting contacts friends from database.
+     */
+    public void deleteAllContactFriends(String personId) {
+        String sql = "{call delete_all_contacts(?)}";
+
+        try (CallableStatement statement = connection.prepareCall(sql)) {
+            connection.setAutoCommit(false);
+            statement.setString(1, personId);
+            statement.execute();
+            connection.commit();
+            connection.setAutoCommit(true);
+        } catch (SQLException e) {
+            cleanUpAfterException();
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
      * Method for inserting person into database.
      */
     public void insertPersonIntoDb(Person person) {
