@@ -101,7 +101,14 @@
     }
 }
 
-@media screen and (max-height: 150px) {
+@media screen and (max-width: 350px) {
+    #contactlist, #searchcontact{
+        width: 30vw;
+    }
+    #messagebox{
+        left:30vw;
+        width: 70vw;
+    }
     /*.dropdown-content {*/
         /*padding: 0.5em;*/
         /*width: 200%;*/

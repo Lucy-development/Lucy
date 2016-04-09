@@ -21,15 +21,20 @@ div.google_map{
 #navigation-list li a{
     font-family: "Verdana", sans-serif;
     font-size: 100%;
-    color: white;
     margin-left: 3%;
+    color: #ebebf1;
     float: left;
     cursor: pointer;
     display: block;
     text-decoration: none;
+    -o-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
+    transition: .5s;
 }
 #navigation-list li a:hover{
-    text-decoration: underline;
+    color: #ffffff;
+    text-shadow: 0 0 1px #eeeeee;
 }
 #map{
     font-weight: bold;

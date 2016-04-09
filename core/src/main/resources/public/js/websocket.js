@@ -238,11 +238,13 @@ function lidToContactName(lid) {
 }
 
 function composeRegularMessage(sender, messageContent) {
-    return sender + ": " + messageContent + "</br>";
+    if (sender === myLid)
+        return "<div class='outgoing'>" + sender + ": "+messageContent+"</div>";
+    return "<div class='incoming'>" + sender + ": " + messageContent + "</div>";
 }
 
 function composeLogMessage(logMessage) {
-    return "--- " + logMessage + " ---" + "</br>";
+    return "<div class='logmessage'>" + logMessage + "</div>";
 }
 
 function getMsgInput() {
