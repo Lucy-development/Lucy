@@ -213,9 +213,9 @@ button:focus {
     text-overflow: ellipsis;
     position: relative;
     float: left;
-    clear: right;
-    margin-bottom: 2%;
-    margin-top: 2%;
+    clear: both;
+    margin-bottom: 0.1em;
+    margin-top: 0.1em;
     max-width: 47%;
     margin-left: 0.1em;
 }
@@ -229,9 +229,9 @@ button:focus {
     white-space: pre-wrap;
     position: relative;
     float: right;
-    clear: left;
-    margin-bottom: 2%;
-    margin-top: 2%;
+    clear: both;
+    margin-bottom: 0.1em;
+    margin-top: 0.1em;
     max-width: 47%;
     margin-right: 0.1em;
 }
@@ -244,8 +244,8 @@ button:focus {
     white-space: pre-wrap;
     float: left;
     clear: both;
-    margin-bottom: 2%;
-    margin-top: 2%;
+    margin-bottom: 0.1em;
+    margin-top: 0.1em;
     margin-left: 0.1em;
 
 }
