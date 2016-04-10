@@ -51,3 +51,11 @@ function loginButtonHandler() {
         statusChangeHandler(response);
     });
 }
+
+function newLoginButtonHandler() {
+    console.log("Attempting FB login");
+    FB.login(function(response) {
+        statusChangeHandler(response);
+    });
+}
+
