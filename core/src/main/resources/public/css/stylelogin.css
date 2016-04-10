@@ -12,38 +12,74 @@ h1 {
     text-shadow: 1px 1px 1px #c4c4c4;
 }
 
-div#container {
-    background-color: #656565;
-    width: 25%;
-    height: 18%;
-    margin: 2% 37%;
-    border-radius: 2%;
-    min-width: 100px;
-    max-height: 160px;
-}
-
-div#login-text {
-    padding: 1px;
-}
-
-h2 {
-    font-family: "Verdana", sans-serif;
-    color: white;
-    text-align: center;
-    font-size: 3vmin;
-}
-
 div#button-wrap {
-    margin: 20px auto;
     text-align: center;
+    margin: 0 auto;
 }
 
-#idcardbutton {
-    background-image: url("../graphics/ikoon_id.gif");
-    width: 82px;
-    height: 28px;
+label{
+    display: none;
 }
 
-#loginbutton {
-    margin: auto auto;
+button#login {
+    background-color: #656565;
+    color: #f7f7f7;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    /*position: absolute;*/
+    height: 17vmin;
+    width: 37vmin;
+    font-size: 3vmin;
+    /*-o-transition: .5s;*/
+    /*-moz-transition: .5s;*/
+    /*-webkit-transition: .5s;*/
+    /*transition: .5s;*/
+    cursor: pointer;
+    outline: none;
 }
+
+button#login:hover {
+    color: #ffffff;
+    text-shadow: 0 0 1px #afafaf;
+    box-shadow: 0 0 10px #808080;
+}
+
+/*div#container {*/
+/*background-color: #656565;*/
+/*width: 25%;*/
+/*height: 18%;*/
+/*margin: 2% 37%;*/
+/*border-radius: 2%;*/
+/*min-width: 100px;*/
+/*max-height: 160px;*/
+/*}*/
+
+/*div#login {*/
+/*padding: 1px;*/
+/*margin: 20px auto;*/
+/*text-align: center;*/
+/*}*/
+
+/*h2 {*/
+/*font-family: "Verdana", sans-serif;*/
+/*color: white;*/
+/*text-align: center;*/
+/*font-size: 3vmin;*/
+/*margin: 20px auto;*/
+/*}*/
+
+/*#loginbutton {*/
+/*width: 82px;*/
+/*height: 28px;*/
+/*color: #8d8d8d;*/
+/*font-family: "Verdana", sans-serif;*/
+/*font-weight: bold;*/
+/*margin: auto auto;*/
+
+/*}*/
+
+/*Facebook login button*/
+/*#loginbutton {*/
+/*margin: auto auto;*/
+/*}*/
