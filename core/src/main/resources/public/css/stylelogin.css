@@ -24,12 +24,13 @@ label{
 button#login {
     background-color: #656565;
     color: #f7f7f7;
-    font-weight: bold;
+    /*font-weight: bold;*/
     border: none;
     border-radius: 5px;
     /*position: absolute;*/
-    height: 17vmin;
-    width: 37vmin;
+    /*height: 7vmin;*/
+    /*width: 37vmin;*/
+    padding: 2vh 1vw;
     font-size: 3vmin;
     /*-o-transition: .5s;*/
     /*-moz-transition: .5s;*/
