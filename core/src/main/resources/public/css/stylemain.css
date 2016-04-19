@@ -193,13 +193,25 @@ button:focus {
     display: inline-block;
 }
 
-/*TODO: not working*/
-#list li.activated {
-    background-color: #EAEAEA;
+#list li.activated{
+    background-color: #ffffff;
+    padding-left: 14%;
+    opacity: 1;
+    border: none;
+    text-align: left;
+    transition: padding-left 0.1s;
 }
 
 #list li.deactivated {
-    background-color: #e5e5e5;
+    background-color: #ffffff;
+    text-align: left;
+    padding-left: 7%;
+    opacity: 0.5;
+    border: none;
+}
+
+#list li.deactivated:hover{
+    opacity: 0.8;
 }
 
 .outgoing{
