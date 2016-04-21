@@ -77,7 +77,7 @@ public class DatabaseManager {
                             rs.getString(PERSON_EMAIL_COL),
                             rs.getString(PERSON_META_COL)
                     );
-                } else throw new RuntimeException();
+                } else return null;
 
                 if (rs.next()) throw new RuntimeException();
                 return person;
