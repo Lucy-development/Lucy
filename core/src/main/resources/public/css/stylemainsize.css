@@ -7,7 +7,6 @@
     }
 
     #contactlist{
-        /*bottom: 49px;*/
         height: calc(88vh - 49px);
         top: 12vh;
     }
@@ -31,9 +30,6 @@
         width: 130px;
     }
 
-    /*.dropdown-content {*/
-        /*width: 12vh;*/
-    /*}*/
     @media screen and (max-height: 600px){
         #contactlist{
             height: calc(100vh - 123px);
@@ -46,18 +42,9 @@
         height: 45px;
     }
 
-    /*.dropdown-content {*/
-        /*width: 160%;*/
-        /*right: 2px;*/
-    /*}*/
-
     .title-bar {
         height: 40px;
     }
-
-    /*#menu-button {*/
-        /*top: 5vh;*/
-    /*}*/
 
     #searchcontact {
         top: 40px;
@@ -79,7 +66,6 @@
 
     #contactlist{
         top: 78px;
-        /*height: calc(100vh - 123px);*/
         height: calc(100vh - 78px);
         padding-bottom: 1px;
         bottom: 45px;
@@ -109,21 +95,11 @@
         left:30vw;
         width: 70vw;
     }
-    /*.dropdown-content {*/
-        /*padding: 0.5em;*/
-        /*width: 200%;*/
-    /*}*/
 }
 
 @media screen and (max-height: 120px) {
-    /*.dropdown*/
     #messagebox, #message, #contacts, #searchcontact, #send {
         display: none;
     }
-
-    /*#small-screen-menu {*/
-        /*display: block;*/
-    /*}*/
-
 }
 
