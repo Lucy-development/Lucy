@@ -8,13 +8,15 @@ function redirectToLogin() {
     window.location = "http://lucy-messaging.herokuapp.com/login.html"; //"http://localhost:4567/login.html";
 }
 
-function sendAuthRequest(userID, accessToken) {
+function sendAuthRequest(userID, accessToken, myName) {
     // TODO: should also include appID?
     var url = "http://lucy-messaging.herokuapp.com/login"; //"http://localhost:4567/login";
     var authObj = {};
     authObj.authmethod = "fb";
     authObj.userid = userID;
     authObj.accesstoken = accessToken;
+    authObj.myname = myName;
+    document.cookie = "myName=" + myName;
     document.cookie = "myLid=" + userID;
 
     req = new XMLHttpRequest();
@@ -41,21 +43,17 @@ function sendAuthRequest(userID, accessToken) {
 function statusChangeHandler(response) {
     console.log("FB API returned response: " + response.status);
     if (response.status === 'connected') {
-        sendAuthRequest(response.authResponse.userID, response.authResponse.accessToken);
+        FB.api('/me', function(meResponse) {
+            sendAuthRequest(response.authResponse.userID, response.authResponse.accessToken, meResponse.name);
+        });
     }
 }
 
-function loginButtonHandler() {
-    console.log("Attempting FB login");
-    FB.getLoginStatus(function(response) {
-        statusChangeHandler(response);
-    });
-}
 
 function newLoginButtonHandler() {
     console.log("Attempting FB login");
     FB.login(function(response) {
         statusChangeHandler(response);
-    });
+    }, {scope: 'public_profile'});
 }
 

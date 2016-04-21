@@ -88,7 +88,7 @@ function sendHandler() {
             if (sessionAuthenticated) {
                 sendMessage(msgContent, receiver);
                 clearMsgInput();
-                insertToMessageBox(composeRegularMessage(lidToContactName(myLid), msgContent));
+                insertToMessageBox(composeRegularMessage(lidToContactName(myLid), msgContent, "me", ""));
             } else {
                 insertToMessageBox(composeLogMessage("Unable to send message, WebSocket session is unauthenticated"));
             }
