@@ -2,6 +2,7 @@ var webSocket = new WebSocket("ws://" + location.hostname + ":" + location.port 
 var connectionOpen = true;
 var sessionAuthenticated = false;
 var myLid = getCookie("myLid");
+var myName = getCookie("myName");
 
 
 // WS HANDLERS
@@ -51,9 +52,13 @@ function messageHandler(string) {
         }
     } else if (purpose === "msg_received") {
         // Received message
-        var sender = serverMessage.from;
+        var sender = serverMessage.sender_fname + " " + serverMessage.sender_lname;
         var messageContent = serverMessage.content;
-        insertToMessageBox(composeRegularMessage(lidToContactName(sender), messageContent));
+        var location = serverMessage.location;
+        var senderLid = serverMessage.from;
+        if (location == null)
+            insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender));
+        else insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender, location));
     } else if (purpose === "auth_resp") {
         if (status === "success") {
             sessionAuthenticated = true;
@@ -237,10 +242,11 @@ function lidToContactName(lid) {
     return lid;
 }
 
-function composeRegularMessage(sender, messageContent) {
-    if (sender === myLid)
-        return "<div class='outgoing'>" + sender + ": "+messageContent+"</div>";
-    return "<div class='incoming'>" + sender + ": " + messageContent + "</div>";
+
+function composeRegularMessage(senderLid, messageContent, sender, location) {
+    if (senderLid === myLid)
+        return "<div class='outgoing'>" + myName + ": " + messageContent + "</div>";
+    return "<div class='incoming'>" + sender + ": " + messageContent + 'near ' + location + "</div>";
 }
 
 function composeLogMessage(logMessage) {
