@@ -40,9 +40,9 @@ html, body {
     cursor: pointer;
     display: block;
     text-decoration: none;
-    -o-transition:.5s;
-    -moz-transition:.5s;
-    -webkit-transition:.5s;
+    -o-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
     transition: .5s;
 }
 
@@ -101,10 +101,7 @@ label {
 }
 
 input {
-    padding: 5px;
-    margin: 8px 0;
     position: absolute;
-    font-size: 15px;
     font-family: "Verdana", sans-serif;
 }
 
@@ -117,7 +114,7 @@ button:focus {
 
 #searchcontact {
     width: 22%;
-    /*height: 5%;*/
+    margin: 7px 0;
     height: 5vh;
     top: 6%;
     border: 1px solid #EDEDF2;
@@ -149,11 +146,11 @@ button:focus {
     bottom: 0;
     margin-bottom: 0;
     color: white;
-    font-weight: bold;
-    font-size: 1em;
-    text-align: center;
+    font-weight: 200;
+    font-size: 250%;
     cursor: pointer;
     z-index: 99;
+    padding: 0 0;
 }
 
 #contactlist {
@@ -193,7 +190,7 @@ button:focus {
     display: inline-block;
 }
 
-#list li.activated{
+#list li.activated {
     background-color: #ffffff;
     padding-left: 14%;
     opacity: 1;
@@ -210,15 +207,17 @@ button:focus {
     border: none;
 }
 
-#list li.deactivated:hover{
+#list li.deactivated:hover {
     opacity: 0.8;
 }
 
-.outgoing{
+.outgoing {
     background-color: coral;
     color: white;
-    padding: 2%;
+    padding: 1%;
     border-radius: 5px;
+    /*border-top-left-radius: 10px;*/
+    /*border-bottom-right-radius: 10px;*/
     word-wrap: break-word;
     white-space: pre-wrap;
     overflow: hidden;
@@ -230,13 +229,17 @@ button:focus {
     margin-top: 0.1em;
     max-width: 47%;
     margin-left: 0.1em;
+    box-shadow: 2px 2px 4px #bebebe;
+    font-size: medium;
 }
 
-.incoming{
-    background-color: rgba(255, 127, 80, 0.68);
+.incoming {
+    background-color: rgba(255, 127, 80, 0.55);
     color: white;
-    padding: 2%;
+    padding: 1%;
     border-radius: 5px;
+    /*border-bottom-left-radius: 10px;*/
+    /*border-top-right-radius: 10px;*/
     word-wrap: break-word;
     white-space: pre-wrap;
     position: relative;
@@ -246,11 +249,14 @@ button:focus {
     margin-top: 0.1em;
     max-width: 47%;
     margin-right: 0.1em;
+    box-shadow: 2px 2px 4px #bebebe;
+    font-size: medium;
 }
 
-.logmessage{
+.logmessage {
     background-color: #e4e4ea;
-    padding: 2%;
+    font-style: italic;
+    padding: 1%;
     border-radius: 5px;
     word-wrap: break-word;
     white-space: pre-wrap;
@@ -259,6 +265,96 @@ button:focus {
     margin-bottom: 0.1em;
     margin-top: 0.1em;
     margin-left: 0.1em;
+    box-shadow: 2px 2px 4px #bebebe;
+    font-size: medium;
 
 }
 
+.dropdown {
+    position: relative;
+    display: inline-block;
+    float: right;
+    margin-right: 5%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #656565;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    padding: 1em;
+    z-index: 100;
+    width: 200%;
+    right: 1px;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropbutton {
+    background-color: #656565;
+    color: #ffffff;
+    font-weight: bold;
+    font-family: "Verdana", sans-serif;
+    font-size: 1em;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-item {
+    background-color: #656565;
+    font-family: "Verdana", sans-serif;
+    font-size: 1em;
+    text-decoration: none;
+    border: none;
+    color: #ebebf1;
+    padding: 0.1em;
+    display: block;
+    cursor: pointer;
+    -o-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
+
+.menu-item:hover {
+    color: #ffffff;
+    text-shadow: 0 0 1px #eeeeee;
+}
+
+#small-screen-menu {
+    display: none;
+    background-color: #656565;
+    width: 100%;
+    position: absolute;
+    right: 0;
+}
+
+#small-screen-list {
+    list-style-type: none;
+    background-color: #656565;
+}
+
+#smallDefault, #smallDarcula {
+    text-decoration: none;
+    color: white;
+    padding: 0.1em;
+    display: block;
+    background-color: #656565;
+    border: none;
+    font-size: 100%;
+    cursor: pointer;
+    float: right;
+    margin-right: 10%;
+    top: 0;
+}
+
+.wrapper_darcula{
+    background-color: #c1cfd6;
+}
+.messagebox_darcula{
+    background-color: #8d8d8d !important;
+    box-shadow: 0 0 0 !important;
+    border: 1px solid #8d8d8d !important;
+}

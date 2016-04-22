@@ -1,7 +1,7 @@
 @media screen and (max-width: 700px) {
 
     #send {
-        font-size: 0.7em;
+        font-size: 2em;
         width: 49px;
         right: 0;
     }
@@ -29,6 +29,11 @@
     #contacts {
         width: 130px;
     }
+
+    .dropdown-content {
+       width: 12vh;
+    }
+
 
     @media screen and (max-height: 600px){
         #contactlist{
@@ -80,6 +85,19 @@
         height: calc(100vh - 85px);
     }
 
+    .dropdown-content {
+        width: 160%;
+        right: 2px;
+    }
+
+    #menu-button {
+        top: 5vh;
+    }
+
+    .outgoing, .incoming, .logmessage{
+
+    }
+
     @media screen and (max-width: 700px){
         #contactlist{
             height: calc(100vh - 123px);
@@ -95,11 +113,18 @@
         left:30vw;
         width: 70vw;
     }
+    .dropdown-content {
+        padding: 0.5em;
+        width: 200%;
+    }
 }
 
 @media screen and (max-height: 120px) {
-    #messagebox, #message, #contacts, #searchcontact, #send {
+    .dropdown, #messagebox, #message, #contacts, #searchcontact, #send {
         display: none;
+    }
+    #small-screen-menu {
+        display: block;
     }
 }
 
