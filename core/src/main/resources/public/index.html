@@ -6,7 +6,7 @@
     <title>Lucy</title>
     <link rel="stylesheet" href="css/stylemain.css">
     <link rel="stylesheet" href="css/stylemainsize.css">
-    <!--<script src="http://maps.googleapis.com/maps/api/js"></script>-->
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
     <script src="js/websocket.js" async></script>
     <script src="js/mainpage.js" async></script>
     <script src="js/style.js" async></script>
@@ -57,6 +57,7 @@
             </div>
         </div>
         <div id="messagebox">
+            <div id="history" onclick="sendHistoryRequest()">load messages</div>
         </div>
     </div>
     <label for="message">Type message</label>

@@ -6,6 +6,7 @@ var myLid = getCookie("myLid");
 var myName = getCookie("myName");
 
 var messageCount = 0;
+var messageID = 0;
 
 
 // WS HANDLERS
@@ -38,12 +39,6 @@ elementById("message").addEventListener("keypress", function (key) {
         sendMessageHandler();
     }
 });
-var msgBox = document.getElementById("messagebox");
-msgBox.onscroll = function () {
-    if (msgBox.scrollTop == 0) {
-        sendHistoryRequest();
-    }
-};
 
 
 function messageHandler(string) {
@@ -116,7 +111,7 @@ function sendMessageHandler() {
             if (sessionAuthenticated) {
                 sendMessage(msgContent, "msg", receiver);
                 clearMsgInput();
-                insertToMessageBox(composeRegularMessage(lidToContactName(myLid), msgContent, "me", ""));
+                insertToMessageBox(composeRegularMessage(myLid, msgContent, ""));
                 messageCount++;
             } else {
                 insertToMessageBox(composeLogMessage("Unable to send message, WebSocket session is unauthenticated"));
@@ -137,194 +132,212 @@ function sendHistoryRequest() {
     }
 }
 
-    function handleContactResponse(jsonObj) {
-        writeContacts(jsonObj.contacts);
+function handleContactResponse(jsonObj) {
+    writeContacts(jsonObj.contacts);
+}
+
+/**
+ * Method inserts html tag into the index.html
+ */
+function writeContactHtmlTag(id, contactName) {
+    //This code creates a new <li> element:
+    var para = document.createElement('li');
+    //Set contact id for the element
+    para.id = id;
+
+    para.setAttribute("onclick", "changeSelectedContactClass(" + "'" + id + "'" + ");");
+
+    para.className = 'deactivated';
+
+    //To add text to the <el> element, you must create a text node first. This code creates a text node:
+    var node = document.createTextNode(contactName);
+
+    //Then you must append the text node to the <ul> element:
+    para.appendChild(node);
+
+    //Finally you must append the new element to an existing element.
+
+    //This code finds an existing element:
+    var element = document.getElementById('list');
+    //This code appends the new element to the existing element:
+    element.appendChild(para);
+}
+
+
+/**
+ *
+ * @param contacts - list of contacts that will be written to the HTML
+ */
+function writeContacts(contacts) {
+    for (var i = 0; i < contacts.length; i++) {
+        writeContactHtmlTag(contacts[i].lid, contacts[i].fname + " " + contacts[i].lname);
+    }
+}
+
+function handleHistoryResponse(historyResponse) {
+    var historyButton = document.getElementById("history");
+
+    for (var i = 0; i < historyResponse.messages.length; i++) {
+        var senderLid = historyResponse.messages[i].sender;
+        var content = historyResponse.messages[i].content;
+        historyButton.insertAdjacentHTML('afterBegin', composeRegularMessage(senderLid, content, ""));
+        messageCount++;
+    }
+}
+
+/**
+ * Method changes chosen contact class
+ */
+function changeSelectedContactClass(id) {
+    var activated = document.getElementsByClassName('activated');
+    var index, len;
+    for (index = 0, len = activated.length; index < len; ++index) {
+        activated[index].setAttribute('class', 'deactivated');
     }
 
-    /**
-     * Method inserts html tag into the index.html
-     */
-    function writeContactHtmlTag(id, contactName) {
-        //This code creates a new <li> element:
-        var para = document.createElement('li');
-        //Set contact id for the element
-        para.id = id;
+    var el = document.getElementById(String(id));
+    console.log(id);
 
-        para.setAttribute("onclick", "changeSelectedContactClass(" + "'" + id + "'" + ");");
-
-        para.className = 'deactivated';
-
-        //To add text to the <el> element, you must create a text node first. This code creates a text node:
-        var node = document.createTextNode(contactName);
-
-        //Then you must append the text node to the <ul> element:
-        para.appendChild(node);
-
-        //Finally you must append the new element to an existing element.
-
-        //This code finds an existing element:
-        var element = document.getElementById('list');
-        //This code appends the new element to the existing element:
-        element.appendChild(para);
+    // Check that elements exists before editing
+    if (el) {
+        el.setAttribute('class', 'activated');
     }
+}
 
 
-    /**
-     *
-     * @param contacts - list of contacts that will be written to the HTML
-     */
-    function writeContacts(contacts) {
-        for (var i = 0; i < contacts.length; i++) {
-            writeContactHtmlTag(contacts[i].lid, contacts[i].fname + " " + contacts[i].lname);
-        }
-    }
-
-    function handleHistoryResponse(historyResponse) {
-        for (var i = 0; i < historyResponse.messages.length; i++) {
-            // TODO: add new messages; scroll
-            console.log(historyResponse.messages[i].content);
-            // historyResponse.messages[i].sender
-        }
-    }
-
-    /**
-     * Method changes chosen contact class
-     */
-    function changeSelectedContactClass(id) {
-        var activated = document.getElementsByClassName('activated');
-        var index, len;
-        for (index = 0, len = activated.length; index < len; ++index) {
-            activated[index].setAttribute('class', 'deactivated');
-        }
-
-        var el = document.getElementById(String(id));
-        console.log(id);
-
-        // Check that elements exists before editing
-        if (el) {
-            el.setAttribute('class', 'activated');
-        }
-    }
+function sendAuthSessionRequest(sessionKey) {
+    var authRequestObject = {};
+    authRequestObject.purpose = "auth";
+    authRequestObject.content = sessionKey;
+    webSocket.send(JSON.stringify(authRequestObject));
+}
 
 
-    function sendAuthSessionRequest(sessionKey) {
-        var authRequestObject = {};
-        authRequestObject.purpose = "auth";
-        authRequestObject.content = sessionKey;
-        webSocket.send(JSON.stringify(authRequestObject));
-    }
+function sendMessage(message, purpose, receiver) {
+    var messageObject = {};
+    messageObject.purpose = purpose;
+    messageObject.to = receiver;
+    messageObject.content = message;
 
+    //TODO: we are dependent of Google
+    // IMPORTANT: the following is async and uses callbacks! Edit with caution!
+    // Insert geolocation data
+    // Check if browser supports geolocation
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            //First function is success function
+            function (position) {
+                //Get the latitude and the longitude;
+                messageObject.latitude = position.coords.latitude;
+                messageObject.longitude = position.coords.longitude;
+                //Google service for reverse geocoding: we can get address by coordinates. Note, it is asyinc
 
-    function sendMessage(message, purpose, receiver) {
-        var messageObject = {};
-        messageObject.purpose = purpose;
-        messageObject.to = receiver;
-        messageObject.content = message;
-
-        //TODO: we are dependent of Google
-        // IMPORTANT: the following is async and uses callbacks! Edit with caution!
-        // Insert geolocation data
-        // Check if browser supports geolocation
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                //First function is success function
-                function (position) {
-                    //Get the latitude and the longitude;
-                    messageObject.latitude = position.coords.latitude;
-                    messageObject.longitude = position.coords.longitude;
-                    //Google service for reverse geocoding: we can get address by coordinates. Note, it is asyinc
-
-                    var geocoder = new google.maps.Geocoder();
-                    var latlng = new google.maps.LatLng(messageObject.latitude, messageObject.longitude);
-                    geocoder.geocode({'latLng': latlng}, function (results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            // Use 0 for more precision
-                            if (results[1]) messageObject.location = results[1].formatted_address;
-                        }
-                        webSocket.send(JSON.stringify(messageObject));
-                    });
-                },
-                // Second function is for case where geolocation fails
-                function () {
+                var geocoder = new google.maps.Geocoder();
+                var latlng = new google.maps.LatLng(messageObject.latitude, messageObject.longitude);
+                geocoder.geocode({'latLng': latlng}, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        // Use 0 for more precision
+                        if (results[1]) messageObject.location = results[1].formatted_address;
+                    }
                     webSocket.send(JSON.stringify(messageObject));
                 });
-        } else {
-            // When browser does not support geolocating
-            webSocket.send(JSON.stringify(messageObject));
-        }
+            },
+            // Second function is for case where geolocation fails
+            function () {
+                webSocket.send(JSON.stringify(messageObject));
+            });
+    } else {
+        // When browser does not support geolocating
+        webSocket.send(JSON.stringify(messageObject));
     }
+}
 
-    /**
-     * Avoid inventing the wheel? (http://www.w3schools.com/js/js_cookies.asp)
-     * TODO: invent the wheel
-     */
-    function getCookie(cookieName) {
-        var name = cookieName + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') c = c.substring(1);
-            if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-        }
-        return "";
+/**
+ * Avoid inventing the wheel? (http://www.w3schools.com/js/js_cookies.asp)
+ * TODO: invent the wheel
+ */
+function getCookie(cookieName) {
+    var name = cookieName + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
     }
+    return "";
+}
 
 
-    /**
-     * Method returns the id of the currently chosen recipient
-     */
-    function getCurrentlyActiveReceiver() {
-        if (getReceiverBoxId() !== "") {
-            return getReceiverBoxId();
-        } else {
-            if (elementByClass("activated").length === 1)
-                return elementByClass("activated")[0].getAttribute("id");
-            //TODO: Error handling
-        }
+/**
+ * Method returns the id of the currently chosen recipient
+ */
+function getCurrentlyActiveReceiver() {
+    if (getReceiverBoxId() !== "") {
+        return getReceiverBoxId();
+    } else {
+        if (elementByClass("activated").length === 1)
+            return elementByClass("activated")[0].getAttribute("id");
+        //TODO: Error handling
     }
+}
 
 
-    function lidToContactName(lid) {
-        // TODO: return corresponding contact name
+function lidToContactName(lid) {
+    if (lid === myLid)return myName;
+
+    if (document.getElementById(lid) === null) {
         return lid;
+    } else {
+        return document.getElementById(lid).innerHTML;
     }
+}
 
 
-    function composeRegularMessage(senderLid, messageContent, sender, location) {
-        if (senderLid === myLid)
-            return "<div class='outgoing'>" + myName + ": " + messageContent + "</div>";
-        return "<div class='incoming'>" + sender + ": " + messageContent + "</div>" + "<div class='message_location'>" + 'Near: ' + location + "</div>";
-    }
+function composeRegularMessage(senderLid, messageContent, location) {
+    if (senderLid === myLid)
+        return "<div id='msg" + messageID + "' class='outgoing'>" + myName + ": " + messageContent + "</div>";
+    return "<div id='msg" + messageID + "' class='incoming'>" + lidToContactName(senderLid) + ": " + messageContent + "</div>" + "<div class='message_location'>" + 'Near: ' + location + "</div>";
+}
 
-    function composeLogMessage(logMessage) {
-        return "<div class='logmessage'>" + logMessage + "</div>";
-    }
+function composeLogMessage(logMessage) {
+    return "<div id=msg'" + messageID + "' class='logmessage'>" + logMessage + "</div>";
+}
 
-    function getMsgInput() {
-        return elementById("message").value;
-    }
+function getMsgInput() {
+    return elementById("message").value;
+}
 
-    function clearMsgInput() {
-        elementById("message").value = "";
-    }
+function clearMsgInput() {
+    elementById("message").value = "";
+}
 
-    function getReceiverBoxId() {
-        return elementById("searchcontact").value;
-    }
+function getReceiverBoxId() {
+    return elementById("searchcontact").value;
+}
 
-    function insertToMessageBox(string) {
-        insertBeforeEnd("messagebox", string);
-    }
+function insertToMessageBox(string) {
+    insertBeforeEnd("messagebox", string);
 
-    function insertBeforeEnd(targetId, string) {
-        elementById(targetId).insertAdjacentHTML("beforeend", string);
-    }
+    var element = elementById("msg" + messageID);
 
-    function elementById(id) {
-        return document.getElementById(id);
+    if (element === null) {
+        return
+    } else {
+        element.scrollIntoView();
     }
+    messageID++;
+}
 
-    function elementByClass(className) {
-        return document.getElementsByClassName(className);
-    }
+
+function insertBeforeEnd(targetId, string) {
+    elementById(targetId).insertAdjacentHTML("beforeend", string);
+}
+
+function elementById(id) {
+    return document.getElementById(id);
+}
+
+function elementByClass(className) {
+    return document.getElementsByClassName(className);
+}
 
