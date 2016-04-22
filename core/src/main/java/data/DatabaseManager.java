@@ -185,36 +185,13 @@ public class DatabaseManager {
 
 
     /**
-     * method for retrieving messages by sender ID
-     *
-     * @param count - N.o messages to fetch
+     * General method for messages retrieval in range [from;to]
      */
-    public List<SentMessage> retrieveMessagesBySender(String senderID, Integer count) {
-        //language=PostgreSQL
-        String sql = "SELECT * FROM messages_by_sender_id(?,?)";
-        return retrieveMessages(sql, senderID, count);
-    }
-
-
-    /**
-     * method for retrieving messages by recipient ID
-     *
-     * @param count - N.o messages to fetch
-     */
-    public List<SentMessage> retrieveMessagesByRecipient(String recipientID, Integer count) {
-        //language=PostgreSQL
-        String sql = "SELECT * FROM messages_by_recipient_id(?,?)";
-        return retrieveMessages(sql, recipientID, count);
-    }
-
-
-    /**
-     * General method for messages retrieval
-     */
-    private List<SentMessage> retrieveMessages(String sql, String id, Integer count) {
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+    public List<SentMessage> retrieveMessagesInRange(String id, Integer from, Integer to) {
+        try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM messages_by_interval(?,?,?)")) {
             stmt.setString(1, id);
-            stmt.setInt(2, count);
+            stmt.setInt(2, from);
+            stmt.setInt(3, to);
             try (ResultSet rs = stmt.executeQuery()) {
                 List<SentMessage> messages = new ArrayList<>();
                 while (rs.next()) {
@@ -222,12 +199,12 @@ public class DatabaseManager {
                 }
                 return messages;
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
             return new ArrayList<>();
         }
     }
+
 
     /**
      * Method for retrieving contact id's from the database.
