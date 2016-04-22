@@ -255,7 +255,7 @@ function lidToContactName(lid) {
 function composeRegularMessage(senderLid, messageContent, sender, location) {
     if (senderLid === myLid)
         return "<div class='outgoing'>" + myName + ": " + messageContent + "</div>";
-    return "<div class='incoming'>" + sender + ": " + messageContent + 'near ' + location + "</div>";
+    return "<div class='incoming'>" + sender + ": " + messageContent + "</div>" + "<div class='message_location'>"+'Near: ' + location + "</div>";
 }
 
 function composeLogMessage(logMessage) {
