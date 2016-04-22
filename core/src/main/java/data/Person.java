@@ -1,7 +1,5 @@
 package data;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
 import java.sql.Date;
 
 /**
@@ -24,11 +22,6 @@ public class Person {
         this.birthday = birthday;
         this.phone = phone;
         this.email = email;
-        try {
-            new InternetAddress(email).validate();
-        } catch (AddressException e) {
-            System.err.println("Invalid Email have been detected in class person!");
-        }
         this.meta = meta;
     }
 

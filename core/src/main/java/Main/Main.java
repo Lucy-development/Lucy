@@ -5,6 +5,7 @@ import authentication.AuthReqParser;
 import authentication.facebook.FBAuthenticator;
 import communication.WSHandler;
 import data.DatabaseManager;
+import data.Person;
 import exceptions.NoAuthMethodException;
 
 import java.io.IOException;
@@ -45,11 +46,11 @@ public class Main {
 
         post("/login", (req, res) -> {
             boolean authSuccessful = false;
-            String lid = null;
+            Person person = null;
             try {
                 String authMethod = AuthReqParser.getAuthMethod(req.body());
                 // LID := FB UID
-                lid = AuthReqParser.getUid(req.body());
+                person = AuthReqParser.getUser(req.body());
                 if (authMethod.equals(Main.FB_AUTH)) {
                     // Facebook login
                     System.err.println("Attempting FB authentication");
@@ -67,7 +68,10 @@ public class Main {
 
             if (authSuccessful) {
                 System.err.println("Auth successful");
-                String token = authManager.addAuthenticated(lid);
+                if (dbManager.getPersonByID(person.getID()) == null) {
+                    dbManager.insertPersonIntoDb(person);
+                }
+                String token = authManager.addAuthenticated(person.getID());
                 res.cookie("sessiontoken", token);
                 System.err.println(token);
                 res.status(200); // This should trigger a client-side redirect to / in browser

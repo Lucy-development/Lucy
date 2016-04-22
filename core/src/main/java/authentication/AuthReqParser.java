@@ -1,8 +1,8 @@
 package authentication;
 
 import com.google.gson.Gson;
+import data.Person;
 import exceptions.NoAuthMethodException;
-import exceptions.NoUidException;
 
 
 public class AuthReqParser {
@@ -23,23 +23,23 @@ public class AuthReqParser {
     }
 
 
-    /**
-     * Returns user ID as indicated by client's request
-     *
-     * @param authReq JSON string representing the auth request by client
-     * @return user ID
-     */
-    public static String getUid(String authReq) {
+    public static Person getUser(String authReq) {
         Gson gson = new Gson();
-        String uid = gson.fromJson(authReq, Req.class).userid;
-        if (uid == null) {
-            throw new NoUidException();
-        }
-        return uid;
+        Req r = gson.fromJson(authReq, Req.class);
+        return new Person(
+                r.userid,
+                r.myname,
+                "",
+                null,
+                null,
+                null,
+                null
+        );
     }
 
     private class Req {
         protected String authmethod;
         protected String userid;
+        protected String myname;
     }
 }
