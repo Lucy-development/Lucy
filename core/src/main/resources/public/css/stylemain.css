@@ -139,10 +139,8 @@ button:focus {
 
 #history{
     text-align: center;
-    padding-top: 0;
     font-style: italic;
     font-size: 90%;
-    opacity: 0.5;
 }
 
 #send {

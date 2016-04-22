@@ -123,12 +123,8 @@ function sendMessageHandler() {
 }
 
 function sendHistoryRequest() {
-    var msgContent = messageCount;
-
-    if (connectionOpen) {
-        if (sessionAuthenticated) {
-            sendMessage(msgContent, "hist", "");
-        }
+    if (connectionOpen && sessionAuthenticated) {
+        sendMessage(messageCount, "hist", "");
     }
 }
 
@@ -175,14 +171,28 @@ function writeContacts(contacts) {
 }
 
 function handleHistoryResponse(historyResponse) {
+    // Get current scroll position:
     var historyButton = document.getElementById("history");
+    var msgBox = elementById("messagebox");
+    var heightBeforeAdd = msgBox.scrollHeight;
+
+    var scrollTo;
 
     for (var i = 0; i < historyResponse.messages.length; i++) {
         var senderLid = historyResponse.messages[i].sender;
         var content = historyResponse.messages[i].content;
+        // Add message to msbBox
         historyButton.insertAdjacentHTML('afterBegin', composeRegularMessage(senderLid, content, ""));
         messageCount++;
+
+        if (i == 0) {
+            scrollTo = messageID;
+        }
+        messageID++;
     }
+
+    // Scroll user back to last location
+    elementById("msg" + scrollTo).scrollIntoView();
 }
 
 /**
@@ -316,13 +326,16 @@ function getReceiverBoxId() {
 }
 
 function insertToMessageBox(string) {
-    insertBeforeEnd("messagebox", string);
+    // Scroll (if user was at the bottom) user back to the bottom of the messagebox
+    var msgBox = elementById("messagebox");
+    var scr = (msgBox.scrollHeight - msgBox.scrollTop == msgBox.clientHeight);
 
+    // Write message
+    insertBeforeEnd("messagebox", string);
+    
     var element = elementById("msg" + messageID);
 
-    if (element === null) {
-        return
-    } else {
+    if (element !== null && scr) {
         element.scrollIntoView();
     }
     messageID++;
@@ -340,4 +353,3 @@ function elementById(id) {
 function elementByClass(className) {
     return document.getElementsByClassName(className);
 }
-
