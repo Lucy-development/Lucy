@@ -22,38 +22,38 @@ html, body {
     font-weight: bold;
 }
 
-#navigation {
-    width: 100%;
-    position: absolute;
-    top: 0;
-    right: 0;
-}
+/*#navigation {*/
+    /*width: 100%;*/
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*right: 0;*/
+/*}*/
 
-#navigation-list {
-    list-style-type: none;
-}
+/*#navigation-list {*/
+    /*list-style-type: none;*/
+/*}*/
 
-#navigation-list li a {
-    color: #ebebf1;
-    margin-left: 3%;
-    float: left;
-    cursor: pointer;
-    display: block;
-    text-decoration: none;
-    -o-transition: .5s;
-    -moz-transition: .5s;
-    -webkit-transition: .5s;
-    transition: .5s;
-}
+/*#navigation-list li a {*/
+    /*color: #ebebf1;*/
+    /*margin-left: 3%;*/
+    /*float: left;*/
+    /*cursor: pointer;*/
+    /*display: block;*/
+    /*text-decoration: none;*/
+    /*-o-transition: .5s;*/
+    /*-moz-transition: .5s;*/
+    /*-webkit-transition: .5s;*/
+    /*transition: .5s;*/
+/*}*/
 
-#chat {
-    font-weight: bold;
-}
+/*#chat {*/
+    /*font-weight: bold;*/
+/*}*/
 
-#navigation-list li a:hover {
-    color: #ffffff;
-    text-shadow: 0 0 1px #eeeeee;
-}
+/*#navigation-list li a:hover {*/
+    /*color: #ffffff;*/
+    /*text-shadow: 0 0 1px #eeeeee;*/
+/*}*/
 
 #wrapper {
     height: 100%;
@@ -350,11 +350,29 @@ button:focus {
     top: 0;
 }
 
+.message_location{
+    font-size: small;
+    float: left;
+    clear: both;
+    margin-left: 1em;
+    display: none;
+}
+
 .wrapper_darcula{
     background-color: #c1cfd6;
 }
+
 .messagebox_darcula{
     background-color: #8d8d8d !important;
     box-shadow: 0 0 0 !important;
     border: 1px solid #8d8d8d !important;
+}
+
+.message_location_darcula{
+    font-size: small;
+    float: left;
+    clear: both;
+    margin-left: 1em;
+    color: white;
+    display: none;
 }

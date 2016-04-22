@@ -6,24 +6,25 @@
     <title>Lucy</title>
     <link rel="stylesheet" href="css/stylemain.css">
     <link rel="stylesheet" href="css/stylemainsize.css">
-    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <!--<script src="http://maps.googleapis.com/maps/api/js"></script>-->
     <script src="js/websocket.js" async></script>
+    <script src="js/mainpage.js" async></script>
     <script src="js/style.js" async></script>
 </head>
 
 <body>
 <div id="wrapper">
     <div class="title-bar" data-responsive-toggle="main-menu" data-hide-for="medium">
-        <div id="navigation">
-            <ul id="navigation-list">
-                <li>
-                    <a id="chat" href="index.html">Chat</a>
-                </li>
-                <li>
-                    <a id="map" href="map.html">Map</a>
-                </li>
-            </ul>
-        </div>
+        <!--<div id="navigation">-->
+            <!--<ul id="navigation-list">-->
+                <!--<li>-->
+                    <!--<a id="chat" href="index.html">Chat</a>-->
+                <!--</li>-->
+                <!--<li>-->
+                    <!--<a id="map" href="map.html">Map</a>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
         <div class="dropdown">
             <label for="menu-button">Menu Button</label>
             <button id="menu-button" class="dropbutton">Theme</button>
@@ -48,8 +49,8 @@
     <div id="container">
         <div id="contacts" title="Contacts will appear here">
             <!--Currently for getting the recepient's ID, later to search contacts from list-->
-            <label for="searchcontact">Search for contact</label>
-            <input title="Write receiver ID here" type="text" id="searchcontact" placeholder="Receiver ID">
+            <label for="searchcontact">Search contact</label>
+            <input title="Search contact" type="text" id="searchcontact" placeholder="Search Contact">
             <div id="contactlist">
                 <ul id="list">
                 </ul>

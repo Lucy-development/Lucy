@@ -94,10 +94,6 @@
         top: 5vh;
     }
 
-    .outgoing, .incoming, .logmessage{
-
-    }
-
     @media screen and (max-width: 700px){
         #contactlist{
             height: calc(100vh - 123px);
