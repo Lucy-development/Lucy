@@ -187,9 +187,9 @@ public class DatabaseManager {
     /**
      * General method for messages retrieval in range [from;to]
      */
-    public List<SentMessage> retrieveMessagesInRange(String id, Integer from, Integer to) {
+    public List<SentMessage> retrieveMessagesInRange(String requesterId, Integer from, Integer to) {
         try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM messages_by_interval(?,?,?)")) {
-            stmt.setString(1, id);
+            stmt.setString(1, requesterId);
             stmt.setInt(2, from);
             stmt.setInt(3, to);
             try (ResultSet rs = stmt.executeQuery()) {
@@ -209,7 +209,7 @@ public class DatabaseManager {
     /**
      * Method for retrieving contact id's from the database.
      */
-    private List<String> getContactFriends(String ID) {
+    public List<String> getContactFriends(String ID) {
         String sql = "SELECT person_friends(?)";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {

@@ -116,4 +116,27 @@ public class CommManager {
         resp.put("contacts", jsonContactArray);
         return send(resp, session);
     }
+
+    public static boolean sendHistory(int messagesReadInSession, String requesterId, Session requesterSession) throws JSONException, IOException {
+        int messagesToSend = 10;
+        List<SentMessage> messages = Main.dbManager.retrieveMessagesInRange(requesterId,
+                messagesReadInSession,
+                messagesReadInSession + messagesToSend);
+
+        JSONObject resp = new JSONObject();
+        resp.put("purpose", "hist_response");
+        resp.put("status", "success");
+        JSONArray jsonMessageArray = new JSONArray();
+
+        for(SentMessage msg : messages){
+            JSONObject m = new JSONObject();
+            m.put("sender", msg.getSender());
+            m.put("receiver", msg.getReceiver());
+            m.put("content", msg.getContent());
+            jsonMessageArray.put(m);
+        }
+
+        resp.put("messages", jsonMessageArray);
+        return send(resp, requesterSession);
+    }
 }

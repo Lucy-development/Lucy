@@ -17,6 +17,7 @@ public class WSHandler {
 
     private final String PURPOSE_AUTH = "auth";
     private final String PURPOSE_MSG = "msg";
+    private final String PURPOSE_HISTORY = "hist";
 
     private SessionManager sessionManager = new SessionManager();
 
@@ -48,7 +49,13 @@ public class WSHandler {
                                 message.content,
                                 message.longitude,
                                 message.latitude,
-                                message.location);
+                                message.location
+                        );
+
+                        if (Main.dbManager.getPersonByID(receiverLid) != null &&
+                                !Main.dbManager.getContactFriends(receiverLid).contains(senderLid)) {
+                            Main.dbManager.insertFriendIntoDb(receiverLid, senderLid);
+                        }
                         if (messageSent) {
                             CommManager.sendResponse(ServerResponse.messageDelivered, senderSession);
                         } else {
@@ -81,6 +88,23 @@ public class WSHandler {
                         CommManager.sendResponse(ServerResponse.authFailed, senderSession);
                         senderSession.close(new CloseStatus(1008, "Session authentication failed"));
                     }
+                }
+
+                break;
+            case PURPOSE_HISTORY:
+                // Client requests message history
+                if (sessionManager.isAuthenticated(senderSession)) {
+                    int messagesReadInSession = Integer.parseInt(message.content);
+                    CommManager.sendHistory(
+                            messagesReadInSession,
+                            sessionManager.userBySession(senderSession).getLid(),
+                            senderSession
+                    );
+
+
+                } else {
+                    System.err.println(String.format("Unauthorized client attempted to fetch history: %s", message));
+                    CommManager.sendResponse(ServerResponse.notAuthorized, senderSession);
                 }
 
                 break;
