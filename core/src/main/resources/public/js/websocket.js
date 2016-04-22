@@ -56,9 +56,18 @@ function messageHandler(string) {
         var messageContent = serverMessage.content;
         var location = serverMessage.location;
         var senderLid = serverMessage.from;
-        if (location == null)
+
+        if (document.getElementById(senderLid) === null) {
+            writeContactHtmlTag(senderLid, sender);
+        }
+
+
+        if (location == null) {
             insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender));
-        else insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender, location));
+        }
+        else {
+            insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender, location));
+        }
     } else if (purpose === "auth_resp") {
         if (status === "success") {
             sessionAuthenticated = true;
@@ -280,3 +289,4 @@ function elementById(id) {
 function elementByClass(className) {
     return document.getElementsByClassName(className);
 }
+
