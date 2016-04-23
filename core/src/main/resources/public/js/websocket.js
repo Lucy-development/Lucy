@@ -66,10 +66,10 @@ function messageHandler(string) {
         }
 
         if (location == null) {
-            insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender));
+            insertToMessageBox(composeRegularMessage(senderLid, messageContent, ""));
         }
         else {
-            insertToMessageBox(composeRegularMessage(senderLid, messageContent, sender, location));
+            insertToMessageBox(composeRegularMessage(senderLid, messageContent, location));
         }
 
         messageCount++;
@@ -306,7 +306,7 @@ function lidToContactName(lid) {
 function composeRegularMessage(senderLid, messageContent, location) {
     if (senderLid === myLid)
         return "<div id='msg" + messageID + "' class='outgoing'>" + myName + ": " + messageContent + "</div>";
-    return "<div id='msg" + messageID + "' class='incoming'>" + lidToContactName(senderLid) + ": " + messageContent + "</div>" + "<div class='message_location'>" + 'Near: ' + location + "</div>";
+    return "<div id='msg" + messageID + "' class='incoming' onmouseover='showMessageLocation(this);' onmouseout='hideMessageLocation(this);'>" + lidToContactName(senderLid) + ": " + messageContent + "</div>" + "<div class='message_location'>" + 'Near: ' + location + "</div>";
 }
 
 function composeLogMessage(logMessage) {

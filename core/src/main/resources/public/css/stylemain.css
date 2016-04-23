@@ -22,38 +22,41 @@ html, body {
     font-weight: bold;
 }
 
-/*#navigation {*/
-    /*width: 100%;*/
-    /*position: absolute;*/
-    /*top: 0;*/
-    /*right: 0;*/
-/*}*/
+#navigation {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
 
-/*#navigation-list {*/
-    /*list-style-type: none;*/
-/*}*/
+#navigation-list {
+    list-style-type: none;
+}
 
-/*#navigation-list li a {*/
-    /*color: #ebebf1;*/
-    /*margin-left: 3%;*/
-    /*float: left;*/
-    /*cursor: pointer;*/
-    /*display: block;*/
-    /*text-decoration: none;*/
-    /*-o-transition: .5s;*/
-    /*-moz-transition: .5s;*/
-    /*-webkit-transition: .5s;*/
-    /*transition: .5s;*/
-/*}*/
+#navigation-list li a {
+    color: #ebebf1;
+    margin-left: 3%;
+    float: left;
+    display: block;
+    text-decoration: none;
+    -o-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
 
-/*#chat {*/
-    /*font-weight: bold;*/
-/*}*/
+#lucy {
+    font-weight: bold;
+}
+#login{
+    cursor: pointer;
+}
 
-/*#navigation-list li a:hover {*/
-    /*color: #ffffff;*/
-    /*text-shadow: 0 0 1px #eeeeee;*/
-/*}*/
+/*#navigation-list li a:hover*/
+#login:hover {
+    color: #ffffff;
+    text-shadow: 0 0 1px #eeeeee;
+}
 
 #wrapper {
     height: 100%;
@@ -257,6 +260,7 @@ button:focus {
     margin-right: 0.1em;
     box-shadow: 2px 2px 4px #bebebe;
     font-size: medium;
+
 }
 
 .logmessage {
@@ -382,3 +386,8 @@ button:focus {
     color: white;
     display: none;
 }
+
+.history_darcula{
+    color: white;
+}
+
