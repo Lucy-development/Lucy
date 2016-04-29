@@ -229,6 +229,12 @@ function sendMessage(message, purpose, receiver) {
     messageObject.to = receiver;
     messageObject.content = message;
 
+    // For testing purposes: returns mock message from server.
+    if(message === "qmwntzucpzalskqqqqqoooo11fwejnhbfibhwpkgfvwhuygwey"){
+        messageObject.purpose = "fgjuopljgf6548345";
+    }
+
+
     //TODO: we are dependent of Google
     // IMPORTANT: the following is async and uses callbacks! Edit with caution!
     // Insert geolocation data

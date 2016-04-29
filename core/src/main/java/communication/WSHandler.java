@@ -18,6 +18,7 @@ public class WSHandler {
     private final String PURPOSE_AUTH = "auth";
     private final String PURPOSE_MSG = "msg";
     private final String PURPOSE_HISTORY = "hist";
+    private final String TEST = "fgjuopljgf6548345";
 
     private SessionManager sessionManager = new SessionManager();
 
@@ -108,6 +109,35 @@ public class WSHandler {
                 }
 
                 break;
+
+            // Send mock message to sender for testing purposes.
+            case TEST:
+                if (sessionManager.isAuthenticated(senderSession)) {
+                    boolean messageSent = CommManager.sendMessage(
+                            "TEST_LID",
+                            "Ivan",
+                            "Orav",
+                            sessionManager.userBySession(senderSession).getLid(),
+                            senderSession,
+                            "This is a test message.",
+                            message.longitude,
+                            message.latitude,
+                            message.location
+                    );
+
+                    if (messageSent) {
+                        CommManager.sendResponse(ServerResponse.messageDelivered, senderSession);
+                    } else {
+                        CommManager.sendResponse(ServerResponse.messageDeliveryFailed, senderSession);
+                    }
+
+                } else {
+                    // Client session is NOT authenticated
+                    System.err.println(String.format("Unauthorized client attempted to send message: %s", message));
+                    CommManager.sendResponse(ServerResponse.notAuthorized, senderSession);
+                }
+                break;
+
             default:
                 System.err.println(String.format("Received message with unknown purpose from client: %s", message));
                 CommManager.sendResponse(ServerResponse.unknownPurpose, senderSession);
