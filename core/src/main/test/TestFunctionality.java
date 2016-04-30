@@ -15,6 +15,10 @@ import static lucytest.Report.FAILED;
 import static lucytest.Report.PASSED;
 import static org.junit.Assert.fail;
 
+/**
+ * IMPORTANT! Before running assign email where the results will be sent into the mail.xml (under receiver)
+ *
+ */
 @Ignore
 public class TestFunctionality {
 
@@ -140,6 +144,7 @@ public class TestFunctionality {
     @After
     public void tearDown() throws Exception {
         selenium.stop();
+        System.out.println("Creating PDF and sending results");
         new MailClient().email("You may find Lucy test results in the attachment. ",new CreatePDF().createResultsPDF(report));
         //new CreatePDF().createResultsPDF(report,"C:\\Users\\Priit Paluoja\\Desktop\\test.pdf");
     }
