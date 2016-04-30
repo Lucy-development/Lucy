@@ -1,0 +1,10 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <entry key="SMTP_host">smtp.gmail.com</entry>
+    <entry key="SMTP_port">587</entry>
+    <entry key="SMTP_username">brockhausserver@gmail.com</entry>
+    <entry key="SMTP_password">brabockers</entry>
+    <entry key="sender">brockhausserver@gmail.com</entry>
+    <entry key="subject">Lucy test results</entry>
+    <entry key="receiver"></entry>
+</properties>
