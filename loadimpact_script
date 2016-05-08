@@ -29,4 +29,4 @@ http.request_batch({
 })
 http.page_end("Page 3")
 
-client.sleep(math.random(10))
+client.sleep(10)
