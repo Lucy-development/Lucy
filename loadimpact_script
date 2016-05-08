@@ -1,0 +1,32 @@
+http.page_start("Page 1")
+http.request_batch({
+    {"GET", "http://lucy-messaging.herokuapp.com/login.html"},
+})
+http.request_batch({
+    {"GET", "http://lucy-messaging.herokuapp.com/css/min/stylelogin_min.css"},
+    {"GET", "http://lucy-messaging.herokuapp.com/js/min/fb_sdk_min.js"},
+    {"GET", "http://lucy-messaging.herokuapp.com/js/min/fb_login_min.js"},
+})
+http.page_end("Page 1")
+
+http.page_start("Page 2")
+local post_data = "email=tmp0602161@gmail.com&pass=pir8man"
+
+http.request_batch({
+     {"POST", "https://www.facebook.com/login.php?skip_api_login=1&api_key=555058557990846&signed_next=1&next=https%3A%2F%2Fwww.facebook.com%2Fv2.5%2Fdialog%2Foauth%3Fredirect_uri%3Dhttp%253A%252F%252Fstaticxx.facebook.com%252Fconnect%252Fxd_arbiter.php%253Fversion%253D42%2523cb%253Df3dbd7f9dafc498%2526domain%253Dlucy-messaging.herokuapp.com%2526origin%253Dhttp%25253A%25252F%25252Flucy-messaging.herokuapp.com%25252Ff357364c460038c%2526relation%253Dopener%2526frame%253Df2ed6482a0bdf18%26display%3Dpopup%26scope%3Dpublic_profile%26response_type%3Dtoken%252Csigned_request%26domain%3Dlucy-messaging.herokuapp.com%26origin%3D1%26client_id%3D555058557990846%26ret%3Dlogin%26sdk%3Djoey&cancel_url=http%3A%2F%2Fstaticxx.facebook.com%2Fconnect%2Fxd_arbiter.php%3Fversion%3D42%23cb%3Df3dbd7f9dafc498%26domain%3Dlucy-messaging.herokuapp.com%26origin%3Dhttp%253A%252F%252Flucy-messaging.herokuapp.com%252Ff357364c460038c%26relation%3Dopener%26frame%3Df2ed6482a0bdf18%26error%3Daccess_denied%26error_code%3D200%26error_description%3DPermissions%2Berror%26error_reason%3Duser_denied%26e2e%3D%257B%257D&display=popup&locale=en_US", data=post_data}
+})
+http.page_end("Page 2")
+
+http.page_start("Page 3")
+http.request_batch({
+     {"GET", "http://lucy-messaging.herokuapp.com/"}
+})
+http.request_batch({
+    {"GET", "http://lucy-messaging.herokuapp.com/css/min/stylemain_min.css"},
+    {"GET", "http://lucy-messaging.herokuapp.com/css/min/stylemainsize_min.css"},
+    {"GET", "http://lucy-messaging.herokuapp.com/js/min/websocket_min.js"},
+    {"GET", "http://lucy-messaging.herokuapp.com/js/min/mainpage_min.js"},
+})
+http.page_end("Page 3")
+
+client.sleep(math.random(10))
