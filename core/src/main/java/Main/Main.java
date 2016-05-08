@@ -40,9 +40,16 @@ public class Main {
         init();  // TODO: probably not needed since we're initializing more routes afterwards
 
         // TODO: should allow requests only from needed origins
-        // Allow requests to /login and to / from any origin
-        before("/login", (req, res) -> res.header("Access-Control-Allow-Origin", "*"));
-        before("/", (req, res) -> res.header("Access-Control-Allow-Origin", "*"));
+        // TODO: should cache for less and add ETags
+        before("/login", (req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
+        });
+        before("/", (req, res) -> {
+            res.header("Access-Control-Allow-Origin", "*");
+        });
+        before("/*", (req, res) -> {
+            res.header("Cache-Control", "max-age=604800"); // Cache for 1 week
+        });
 
         post("/login", (req, res) -> {
             boolean authSuccessful = false;

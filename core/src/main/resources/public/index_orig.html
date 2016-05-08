@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucy</title>
+    <link rel="stylesheet" href="css/min/stylemain_min.css">
+    <link rel="stylesheet" href="css/min/stylemainsize_min.css">
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="js/min/websocket_min.js" async></script>
+    <script src="js/min/mainpage_min.js" async></script>
+</head>
+
+<body>
+<div id="wrapper">
+    <div class="title-bar" data-responsive-toggle="main-menu" data-hide-for="medium">
+        <div id="navigation">
+            <ul id="navigation-list">
+                <li>
+                    <a id="lucy">Lucy</a>
+                </li>
+                <li>
+                    <a id="login" href="login.html">Login</a>
+                </li>
+            </ul>
+        </div>
+        <div class="dropdown">
+            <label for="menu-button">Menu Button</label>
+            <button id="menu-button" class="dropbutton">Theme</button>
+            <div class="dropdown-content">
+                <label for="default">Default theme</label>
+                <button class="menu-item" id="default" onclick="changeStyle('default');">Default</button>
+                <label for="darcula">Darcula theme</label>
+                <button class="menu-item" id="darcula" onclick="changeStyle('darcula');">Darcula</button>
+            </div>
+        </div>
+        <div id="small-screen-menu">
+            <ul id="small-screen-list">
+                <li><label for="smallDefault">Default theme</label>
+                    <button id="smallDefault" onclick="changeStyle('default');">Default</button>
+                </li>
+                <li><label for="smallDarcula">Darcula theme</label>
+                    <button id="smallDarcula" onclick="changeStyle('darcula');">Darcula</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="container">
+        <div id="contacts" title="Contacts will appear here">
+            <!--Currently for getting the recepient's ID, later to search contacts from list-->
+            <label for="searchcontact">Search contact</label>
+            <input title="Search contact" type="text" id="searchcontact" placeholder="Search Contact">
+            <div id="contactlist">
+                <ul id="list">
+                </ul>
+            </div>
+        </div>
+        <div id="messagebox">
+            <div id="history" onclick="sendHistoryRequest()">load messages</div>
+        </div>
+    </div>
+    <label for="message">Type message</label>
+    <input type="text" id="message" placeholder="Insert message or drop files here">
+    <label for="send">Send Button</label>
+    <input id="send" type="button" value=➢>
+    <!--TODO: Search button here?-->
+</div>
+</body>
+</html>
