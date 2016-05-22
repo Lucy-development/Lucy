@@ -113,6 +113,18 @@
         padding: 0.5em;
         width: 200%;
     }
+
+    #navigation-list li a#login{
+        margin-left: 0;
+        padding-left: 0;
+        position: relative;
+        float: left;
+        left: 0;
+    }
+    #navigation-list li a#lucy{
+        display: none;
+    }
+
 }
 
 @media screen and (max-height: 120px) {
